@@ -1,0 +1,40 @@
+import { chromium } from 'playwright-core';
+const SITE = process.env.E2E_SITE ?? 'http://127.0.0.1:8788', OWN = 'http://127.0.0.1:18395';
+const d = (id, name, url) => ({ transportUrl: url, manifest: { id, name }, flags: {} });
+let collection = [d('com.linvo.cinemeta', 'Cinemeta', 'https://v3-cinemeta.strem.io/manifest.json'), d('org.stremio.opensubtitlesv3', 'OpenSubtitles v3', 'https://opensubtitles-v3.strem.io/manifest.json')];
+const assert = (ok, msg) => { if (!ok) throw new Error(`FAIL: ${msg}`); console.log(`ok   ${msg}`); };
+const errors = [];
+const b = await chromium.launch({ executablePath: process.env.CHROMIUM ?? '/usr/bin/chromium', args: ['--no-sandbox'] });
+const page = await (await b.newContext({ acceptDownloads: true })).newPage();
+page.on('pageerror', (e) => errors.push(String(e)));
+page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); });
+await page.route('https://api.strem.io/api/**', async (route) => {
+  const method = new URL(route.request().url()).pathname.split('/').pop(); const body = route.request().postDataJSON();
+  const reply = (result) => route.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify({ result }) });
+  if (method === 'addonCollectionGet') return reply({ addons: collection });
+  if (method === 'addonCollectionSet') { collection = body.addons; return reply({ success: true }); }
+  return route.abort();
+});
+await page.addInitScript(() => document.addEventListener('securitypolicyviolation', (e) => console.error(`CSP blocked ${e.blockedURI} (${e.violatedDirective})`)));
+await page.goto(SITE);
+await page.fill('#authkey', 'AUTH');
+await page.fill('[data-cred="apiKey"]', 'fake-torbox');
+await page.check('input[name="host"][value="own"]');
+await page.fill('#own-url', OWN);
+await page.selectOption('#language', 'es-419');
+await page.click('#review-btn');
+await page.waitForSelector('#review:not([hidden]), #log li.err');
+await page.click('#install-btn');
+await page.waitForSelector('#done:not([hidden]), #log li.err', { timeout: 60000 });
+console.log('     log:', (await page.textContent('#log')).replace(/\s+/g, ' '));
+assert(await page.isVisible('#done'), 'install through own server finished (direct browser call, CORS)');
+console.log('     collection:', collection.map((a) => `${a.manifest.name} <${a.transportUrl.slice(0, 40)}>`).join(' | '));
+assert(collection[1].transportUrl.startsWith(`${OWN}/stremio/`), 'Filmhub points at own server');
+assert(collection[2].transportUrl === `${OWN}/subs/es-419/manifest.json` && collection[2].manifest.id === 'filmhub.subs.es-419', 'Spanish subs come from own server (per-language route through the gateway)');
+// Per-language subtitle routes are served by the kit as well (the gateway strips /subs).
+const kitManifest = await (await fetch(`${OWN}/subs/es-419/manifest.json`)).json();
+assert(kitManifest.id === 'filmhub.subs.es-419', 'kit serves /subs/es-419/manifest.json');
+assert((await (await fetch(`${OWN}/subs/manifest.json`)).json()).id === 'filmhub.subs', 'kit still serves the pt-BR /subs/manifest.json');
+assert((await fetch(`${OWN}/subs/xx/manifest.json`)).status === 404, 'kit answers 404 for an unknown language');
+assert(errors.length === 0, 'no page errors');
+await b.close();

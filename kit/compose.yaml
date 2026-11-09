@@ -1,0 +1,58 @@
+# Filmhub self-host kit: AIOStreams with the Filmhub patches, smart subtitles and a small gateway.
+# Usage: cp .env.example .env && edit it, then: docker compose up -d --build
+name: filmhub
+services:
+  aiostreams:
+    # AIOStreams v2.37.0 (pinned) + Brazilian episode names, stream-title repair and localized library titles (compat/).
+    build: ./compat
+    image: filmhub-aiostreams:2.37.0-filmhub-1
+    restart: unless-stopped
+    init: true
+    env_file: .env
+    environment:
+      DATABASE_URI: sqlite://./data/db.sqlite
+      # Anyone who can reach the gateway can create a profile, so the instance must not reach your home network
+      # (ALLOW_PRIVATE_URLS defaults to true upstream) and only accepts the regex/SEL lists the Filmhub profile syncs.
+      ALLOW_PRIVATE_URLS: "false"
+      REGEX_FILTER_ACCESS: trusted
+      WHITELISTED_REGEX_PATTERNS_URLS: '["https://git.tamtaro.de/Excluded-Regex.json","https://raw.githubusercontent.com/Vidhin05/Releases-Regex/main/English/regexes.json","https://git.tamtaro.de/for-nour-Regex.json"]'
+      SEL_SYNC_ACCESS: trusted
+      WHITELISTED_SEL_URLS: '["https://raw.githubusercontent.com/Vidhin05/Releases-Regex/main/English/expressions.json","https://git.tamtaro.de/for-nour-RSE.json"]'
+    volumes:
+      - aiostreams-data:/app/data
+    mem_limit: 1536m
+    cpus: 2
+    security_opt: [no-new-privileges:true]
+  subs:
+    image: node:24-alpine@sha256:50c8e8ca1d27439048670df5883f32d57cf81cff6233222c893fd0d9884cbd81
+    restart: unless-stopped
+    init: true
+    command: ["node", "/app/packages/subs/server.mjs"]
+    user: node
+    environment: { PORT: "18310", HOST: "0.0.0.0" }
+    volumes:
+      # subs.mjs reads the language profiles from packages/policy, so the whole packages folder is mounted.
+      - ../packages:/app/packages:ro
+    read_only: true
+    cap_drop: [ALL]
+    mem_limit: 96m
+    cpus: 0.25
+    security_opt: [no-new-privileges:true]
+  gateway:
+    image: nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de
+    restart: unless-stopped
+    environment:
+      FILMHUB_SITE_ORIGIN: ${FILMHUB_SITE_ORIGIN:-https://filmhub.ncls.cc}
+    ports:
+      - "${FILMHUB_BIND:-127.0.0.1}:${FILMHUB_PORT:-8080}:8080"
+    volumes:
+      - ./gateway/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./gateway/proxy.inc:/etc/nginx/conf.d/proxy.inc:ro
+    depends_on: [aiostreams, subs]
+    cap_drop: [ALL]
+    cap_add: [CHOWN, SETGID, SETUID]
+    mem_limit: 64m
+    cpus: 0.5
+    security_opt: [no-new-privileges:true]
+volumes:
+  aiostreams-data:
