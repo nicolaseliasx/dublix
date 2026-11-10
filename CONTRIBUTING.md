@@ -12,7 +12,7 @@ Thanks for helping. Issues and pull requests are welcome, especially new languag
 ## Tests
 
 ```sh
-npm test          # unit tests: policy, languages, golden pt-BR, profile builder, merge, proxy, subs, kit patches
+npm test          # unit tests: policy, languages, golden pt-BR, profile builder, merge, proxy, subs, kit patches, tools
 ```
 
 Browser tests need `playwright-core`, Chromium, and a local AIOStreams on port 18391 (public-instance flow) or the kit on port 18395 (own-server flow):

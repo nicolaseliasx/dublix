@@ -93,6 +93,7 @@ The other languages passed a real-stream check on 9–15 titles each (no errors,
 | `packages/subs` | Dublix Subs, one subtitles addon per language. |
 | `site/`, `functions/` | Setup site and its Cloudflare Pages Functions. |
 | `kit/` | Self-host kit: patched AIOStreams, subtitles and gateway. |
+| `tools/` | Checks for your own instance: gateway exposure, stream smoke test and benchmark. See [tools/README.md](tools/README.md). |
 | `scripts/`, `tests/e2e/` | Build, local preview, base profile export and browser tests. |
 
 ## Development
@@ -100,7 +101,7 @@ The other languages passed a real-stream check on 9–15 titles each (no errors,
 Node.js 20 or later, no npm dependencies.
 
 ```sh
-npm test       # unit tests
+npm test       # unit tests (packages, kit and tools)
 npm run dev    # build and serve the site with its functions on http://127.0.0.1:8788
 ```
 

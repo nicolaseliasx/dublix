@@ -6,7 +6,7 @@
   "description": "Your language first, streams for Stremio: AIOStreams profile builder, setup site and self-host kit.",
   "engines": { "node": ">=20" },
   "scripts": {
-    "test": "node --test packages/ kit/",
+    "test": "node --test packages/ kit/ tools/",
     "build": "node scripts/build-site.mjs",
     "dev": "node scripts/build-site.mjs && node scripts/dev-server.mjs",
     "e2e": "node tests/e2e/public-instance.e2e.mjs && node tests/e2e/own-server.e2e.mjs"

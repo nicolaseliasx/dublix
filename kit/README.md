@@ -10,6 +10,8 @@ What you get over a public instance:
 
 Verified audio (inspecting real audio tracks to drop files whose name promises Portuguese) is not in the kit yet.
 
+Check your instance with the scripts in [tools/](../tools/README.md): `verify-gateway` (what the gateway exposes), `stream-smoke` (stream lists and, opt-in, playback) and `benchmark` (latency and list stability).
+
 ## Requirements
 
 - Docker with Compose.
@@ -24,6 +26,7 @@ sed -i "s/^SECRET_KEY=$/SECRET_KEY=$(openssl rand -hex 32)/" .env
 # edit BASE_URL (your HTTPS address) and point your tunnel at http://127.0.0.1:8080
 docker compose up -d --build
 curl -s http://127.0.0.1:8080/api/v1/status
+node ../tools/verify-gateway.mjs   # optional: checks what the gateway exposes
 ```
 
 Then open the Dublix setup site, choose **My own server**, enter your `BASE_URL`, and install.
