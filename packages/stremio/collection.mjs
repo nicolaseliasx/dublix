@@ -10,7 +10,8 @@ const STREAMS_NAMES = ['Dublix', 'Filmhub'];
 export const isFilmhubStreams = (a) => valid(a) && STREAMS_NAMES.includes(a.manifest.name) && /\/stremio\/[^/]+\/[^/]+\/manifest\.json$/.test(a.transportUrl);
 // Dublix Subs has one addon per language: `filmhub.subs` (pt-BR) and `filmhub.subs.<language id>`.
 const SUBS_VARIANT = /^filmhub\.subs(\.[A-Za-z0-9-]+)?$/;
-export const isFilmhubSubs = (a) => valid(a) && SUBS_VARIANT.test(a.manifest.id);
+// `cc.ncls.filmhub.subs` was the id of the pre-release subtitles addon.
+export const isFilmhubSubs = (a) => valid(a) && (SUBS_VARIANT.test(a.manifest.id) || a.manifest.id === 'cc.ncls.filmhub.subs');
 
 /**
  * @param current addons from addonCollectionGet

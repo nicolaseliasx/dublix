@@ -114,3 +114,13 @@ test('an old Filmhub Subs entry is replaced in place by Dublix Subs', () => {
   assert.deepEqual(addons.map((a) => a.manifest.name), ['Cinemeta', 'Dublix', 'Dublix Subs', 'Torrentio']);
   assert.deepEqual(changes, [{ action: 'replace', name: 'Dublix' }, { action: 'replace', name: 'Filmhub Subs', with: 'Dublix Subs' }]);
 });
+
+test('the pre-release subtitles id is still recognised and replaced in place', () => {
+  const early = d('cc.ncls.filmhub.subs', 'Filmhub Subs', 'https://early.example/subs/manifest.json');
+  assert.equal(isFilmhubSubs(early), true);
+  for (const id of ['cc.ncls.filmhub.subsx', 'cc.ncls.filmhub.subs.pt-BR', 'xcc.ncls.filmhub.subs']) {
+    assert.equal(isFilmhubSubs(d(id, 'Other', 'https://x.example/manifest.json')), false, id);
+  }
+  const { addons } = mergeCollection([cinemeta, early, torrentio], { streams: newFilmhub, subs });
+  assert.deepEqual(addons.map((a) => a.manifest.id), ['com.linvo.cinemeta', 'com.aiostreams.viren070', 'filmhub.subs', 'com.stremio.torrentio.addon']);
+});
