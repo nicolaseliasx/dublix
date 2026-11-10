@@ -161,13 +161,13 @@ test('pickSubtitles uses the language\'s codes in order, first code with results
 test('manifests: pt-BR keeps the installed id and name; every other language has its own id and name', () => {
   assert.deepEqual(manifestFor('pt-BR'), MANIFEST);
   assert.equal(MANIFEST.id, 'filmhub.subs');
-  assert.equal(MANIFEST.name, 'Filmhub Subs');
+  assert.equal(MANIFEST.name, 'Dublix Subs');
   const seen = new Set([MANIFEST.id]);
   const names = new Set([MANIFEST.name]);
   for (const { id } of languageList().filter((l) => l.id !== 'pt-BR')) {
     const m = manifestFor(id);
     assert.equal(m.id, `filmhub.subs.${id}`);
-    assert.match(m.name, /^Filmhub Subs /);
+    assert.match(m.name, /^Dublix Subs /);
     assert.deepEqual(m.resources, ['subtitles']);
     assert.ok(!seen.has(m.id) && !names.has(m.name), id);
     seen.add(m.id); names.add(m.name);

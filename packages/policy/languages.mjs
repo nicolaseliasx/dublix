@@ -3,7 +3,7 @@
 // contain no language-specific text of their own. Pure data and two lookups; runs in Node, in the browser and in a Worker.
 //
 // Fields
-//   id, name        route/option id (also the Filmhub Subs URL segment) and the English display name
+//   id, name        route/option id (also the Dublix Subs URL segment) and the English display name
 //   quality         'curated': keywords, sources and subtitle tokens were chosen for this language.
 //                   'basic': only AIOStreams' own language detection (no keyword list, no extra sources).
 //   audio           AIOStreams audio language names that count as "my language", preferred first. Must be names from
@@ -21,7 +21,7 @@
 //   torrentio       extra Torrentio sources for this language (providers that exist in Torrentio, or its `language=` priority).
 //   labels          the texts shown on each stream: my-language audio, several audio tracks incl. mine, and other audio.
 //   tag             short name used inside the generated rules' comments (the pt-BR rules keep their historical `PT-BR`).
-//   subs            Filmhub Subs: OpenSubtitles v3 codes (first one with results wins) and the file-name classifier tokens.
+//   subs            Dublix Subs: OpenSubtitles v3 codes (first one with results wins) and the file-name classifier tokens.
 //                   `dub` words mean "this file has my language's audio"; `alone` requires no other language word next to it;
 //                   `dual` makes a DUAL release count as mine (`bare`: also when it names no other language).
 //                   `other` replaces the default list of foreign-language words used by `alone` and `bare`.
@@ -47,9 +47,9 @@ const curated = {
     // Plain 'Portuguese' is ambiguous; it counts as probable PT-BR only because releases marked European Portuguese are dropped.
     exclude: { keywords: ['pt-pt', 'pt_pt', 'portuguese portugal', 'português de portugal', 'portugues de portugal', 'european portuguese', 'portugal dub'], unless: [] },
     torrentio: [
-      { id: 'filmhub-regular-show-ptbr', name: 'Filmhub Regular Show PT-BR', language: 'portuguese', mediaTypes: ['series'] },
-      { id: 'filmhub-ptbr', name: 'Filmhub PT-BR Sources', providers: ['micoleaodublado'], mediaTypes: ['movie', 'series'] },
-      { id: 'filmhub-ptbr-verified', name: 'Filmhub PT-BR Comando', providers: ['comando'], mediaTypes: ['movie', 'series'] },
+      { id: 'filmhub-regular-show-ptbr', name: 'Dublix Regular Show PT-BR', language: 'portuguese', mediaTypes: ['series'] },
+      { id: 'filmhub-ptbr', name: 'Dublix PT-BR Sources', providers: ['micoleaodublado'], mediaTypes: ['movie', 'series'] },
+      { id: 'filmhub-ptbr-verified', name: 'Dublix PT-BR Comando', providers: ['comando'], mediaTypes: ['movie', 'series'] },
     ],
     labels: { dubbed: 'PT-BR', dual: 'Dual áudio', original: 'Original' },
     subs: { name: 'Brazilian Portuguese', codes: ['pob', 'por'], dub: 'dublad[oa]|dublagem|pt-?br|brazilian|brasileir[oa]', dual: { token: 'pt', bare: true } },
@@ -79,8 +79,8 @@ const curated = {
     subtitles: ['Latino', 'Spanish'],
     exclude: { keywords: ['castellano', 'espanol de espana', 'español de españa'], unless: ['latino', 'latam', 'dual-lat'] },
     torrentio: [
-      { id: 'filmhub-es419-language', name: 'Filmhub Latino', language: 'latino', mediaTypes: ['series'] },
-      { id: 'filmhub-es419', name: 'Filmhub Latino Sources', providers: ['cinecalidad'], mediaTypes: ['movie', 'series'] },
+      { id: 'filmhub-es419-language', name: 'Dublix Latino', language: 'latino', mediaTypes: ['series'] },
+      { id: 'filmhub-es419', name: 'Dublix Latino Sources', providers: ['cinecalidad'], mediaTypes: ['movie', 'series'] },
     ],
     labels: { dubbed: 'Latino', dual: 'Doble audio', original: 'Original' },
     subs: { name: 'Spanish', codes: ['spa'], dub: 'latino|latam|dual-lat' },
@@ -94,8 +94,8 @@ const curated = {
     // Lat-Cast releases carry both Spanish dubs, so they stay.
     exclude: { keywords: ['latino', 'latam', 'dual-lat'], unless: ['castellano', 'lat-cast'] },
     torrentio: [
-      { id: 'filmhub-eses-language', name: 'Filmhub Castellano', language: 'spanish', mediaTypes: ['series'] },
-      { id: 'filmhub-eses', name: 'Filmhub Castellano Sources', providers: ['mejortorrent', 'wolfmax4k'], mediaTypes: ['movie', 'series'] },
+      { id: 'filmhub-eses-language', name: 'Dublix Castellano', language: 'spanish', mediaTypes: ['series'] },
+      { id: 'filmhub-eses', name: 'Dublix Castellano Sources', providers: ['mejortorrent', 'wolfmax4k'], mediaTypes: ['movie', 'series'] },
     ],
     labels: { dubbed: 'Castellano', dual: 'Doble audio', original: 'Original' },
     subs: { name: 'Spanish', codes: ['spa'], dub: 'castellano|spanish|spa|espanol' },
@@ -111,8 +111,8 @@ const curated = {
     // VFQ is the Québec dub.
     exclude: { keywords: ['vfq'], unless: ['vff', 'vf2', 'truefrench'] },
     torrentio: [
-      { id: 'filmhub-fr-language', name: 'Filmhub French', language: 'french', mediaTypes: ['series'] },
-      { id: 'filmhub-fr', name: 'Filmhub French Sources', providers: ['torrent9'], mediaTypes: ['movie', 'series'] },
+      { id: 'filmhub-fr-language', name: 'Dublix French', language: 'french', mediaTypes: ['series'] },
+      { id: 'filmhub-fr', name: 'Dublix French Sources', providers: ['torrent9'], mediaTypes: ['movie', 'series'] },
     ],
     labels: { dubbed: 'Français', dual: 'Multi audio', original: 'Original' },
     subs: { name: 'French', codes: ['fre', 'fra'], dub: 'french|francais|vff|vf2|vfi|vfq|vf|truefrench|multi' },
@@ -125,8 +125,8 @@ const curated = {
     subtitles: ['Italian'],
     exclude: null,
     torrentio: [
-      { id: 'filmhub-it-language', name: 'Filmhub Italian', language: 'italian', mediaTypes: ['series'] },
-      { id: 'filmhub-it', name: 'Filmhub Italian Sources', providers: ['ilcorsaronero'], mediaTypes: ['movie', 'series'] },
+      { id: 'filmhub-it-language', name: 'Dublix Italian', language: 'italian', mediaTypes: ['series'] },
+      { id: 'filmhub-it', name: 'Dublix Italian Sources', providers: ['ilcorsaronero'], mediaTypes: ['movie', 'series'] },
     ],
     labels: { dubbed: 'Italiano', dual: 'Doppio audio', original: 'Originale' },
     subs: { name: 'Italian', codes: ['ita'], dub: 'ita|italian|italiano|doppiato' },
@@ -140,7 +140,7 @@ const curated = {
     subtitles: ['German'],
     exclude: null,
     // Torrentio has no German-specific source: only its `language=german` priority.
-    torrentio: [{ id: 'filmhub-de-language', name: 'Filmhub German', language: 'german', mediaTypes: ['series'] }],
+    torrentio: [{ id: 'filmhub-de-language', name: 'Dublix German', language: 'german', mediaTypes: ['series'] }],
     labels: { dubbed: 'Deutsch', dual: 'Dual Language', original: 'Original' },
     subs: { name: 'German', codes: ['ger', 'deu'], dub: 'german|deutsch|ger|deu' },
   },

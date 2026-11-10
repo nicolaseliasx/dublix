@@ -1,4 +1,4 @@
-// Builds a public Filmhub AIOStreams config: a sanitized base (no credentials, no owner-only rules)
+// Builds a public Dublix AIOStreams config: a sanitized base (no credentials, no owner-only rules)
 // plus the viewer's debrid services and list options. Pure; runs in Node and in the browser.
 import { applyNextPolicy, SERVICE_IDS } from './policy.mjs';
 import { DEFAULT_LANGUAGE, getLanguage, preferredLanguages, preferredSubtitles, realAudio } from './languages.mjs';
@@ -62,7 +62,7 @@ export function sanitizeBase(ownerConfig) {
   if (typeof custom?.description === 'string') {
     custom.description = custom.description.replace(/\{stream\.rseMatched::~Filmhub playback:[^[]*\["[\s\S]*?"\|\|""\]\}/g, '');
   }
-  Object.assign(cfg, { services: [], tmdbApiKey: '', tvdbApiKey: '', addonName: 'Filmhub', trusted: false });
+  Object.assign(cfg, { services: [], tmdbApiKey: '', tvdbApiKey: '', addonName: 'Dublix', trusted: false });
   delete cfg.uuid;
   const leaks = findSecrets(cfg);
   if (leaks.length) throw new Error(`base still carries secrets at ${leaks.join(', ')}`);

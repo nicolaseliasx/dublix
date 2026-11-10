@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { handleAio, INSTANCES, MAX_BODY } from './aio-proxy.mjs';
 
 const host = INSTANCES[0].host;
-const url = (q) => `https://filmhub.example/api/aio?${new URLSearchParams(q)}`;
+const url = (q) => `https://dublix.example/api/aio?${new URLSearchParams(q)}`;
 const recorder = (status = 201, body = { success: true, data: { uuid: 'u', encryptedPassword: 'p' } }) => {
   const calls = [];
   const fetch = async (target, init = {}) => { calls.push({ target: String(target), init }); return new Response(JSON.stringify(body), { status }); };

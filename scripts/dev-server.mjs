@@ -20,4 +20,4 @@ createServer(async (req, res) => {
   if (!path.startsWith(dist)) { res.writeHead(403); return res.end(); }
   try { const data = await readFile(path); res.writeHead(200, { 'content-type': types[extname(path)] ?? 'application/octet-stream' }); res.end(data); }
   catch { res.writeHead(404); res.end('not found'); }
-}).listen(port, '127.0.0.1', () => console.log(`Filmhub preview on http://127.0.0.1:${port}`));
+}).listen(port, '127.0.0.1', () => console.log(`Dublix preview on http://127.0.0.1:${port}`));

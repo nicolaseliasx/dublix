@@ -62,7 +62,7 @@ export function sanitizeBase(ownerConfig) {
   if (typeof custom?.description === 'string') {
     custom.description = custom.description.replace(/\{stream\.rseMatched::~Filmhub playback:[^[]*\["[\s\S]*?"\|\|""\]\}/g, '');
   }
-  Object.assign(cfg, { services: [], tmdbApiKey: '', tvdbApiKey: '', addonName: 'Filmhub', trusted: false });
+  Object.assign(cfg, { services: [], tmdbApiKey: '', tvdbApiKey: '', addonName: 'Dublix', trusted: false });
   delete cfg.uuid;
   const leaks = findSecrets(cfg);
   if (leaks.length) throw new Error(`base still carries secrets at ${leaks.join(', ')}`);

@@ -1,4 +1,4 @@
-// Filmhub Subs: Stremio subtitles addon that follows the audio of the chosen stream, for any language of packages/policy/languages.mjs.
+// Dublix Subs: Stremio subtitles addon that follows the audio of the chosen stream, for any language of packages/policy/languages.mjs.
 // Stremio sends the chosen file's name (behaviorHints.filename). A file with the language's own audio (dubbed, dual) gets no subtitles
 // (so nothing is auto-selected); any other file gets only that language's subtitles, taken from OpenSubtitles v3. It replaces
 // OpenSubtitles v3 in the Stremio account: while both are installed, dubbed files would still be offered subtitles.
@@ -9,7 +9,7 @@ import { DEFAULT_LANGUAGE, getLanguage, hasLanguage } from '../policy/languages.
 
 export const UPSTREAM = 'https://opensubtitles-v3.strem.io';
 export const MANIFEST = {
-  id: 'filmhub.subs', version: '1.0.0', name: 'Filmhub Subs',
+  id: 'filmhub.subs', version: '1.0.0', name: 'Dublix Subs',
   description: 'Brazilian Portuguese subtitles only when the chosen audio is not Portuguese; dubbed and dual-audio files get none.',
   resources: ['subtitles'], types: ['movie', 'series'], idPrefixes: ['tt'], catalogs: [],
 };

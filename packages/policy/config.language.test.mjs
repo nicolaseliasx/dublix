@@ -92,3 +92,13 @@ test('the real base profile stays within the AIOStreams expression limits (3000 
     }
   }
 });
+
+test('users see Dublix: the addon name and every preset display name, for every language (ids stay filmhub-*)', () => {
+  for (const id of ids) {
+    const cfg = buildFilmhubConfig(base, opts({ language: id }));
+    assert.equal(cfg.addonName, 'Dublix', id);
+    for (const p of cfg.presets) assert.doesNotMatch(p.options.name ?? '', /Filmhub/, `${id}: ${p.instanceId}`);
+    assert.ok(cfg.presets.some((p) => /^filmhub-/.test(p.instanceId)), id);
+  }
+  assert.doesNotMatch(JSON.stringify(getLanguage('pt-BR').torrentio.map((t) => t.name)), /Filmhub/);
+});

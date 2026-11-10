@@ -1,4 +1,4 @@
-# Only what Stremio and the Filmhub site need reaches AIOStreams. The configure UI and the rest of the API answer 404.
+# Only what Stremio and the Dublix site need reaches AIOStreams. The configure UI and the rest of the API answer 404.
 # Profile creation is open to anyone who reaches the gateway (that is how the setup site works): keep it slow.
 limit_req_zone $binary_remote_addr zone=filmhub_create:1m rate=10r/m;
 # Behind a tunnel the edge says https; on a direct connection use the real scheme.
@@ -15,7 +15,7 @@ server {
     location ^~ /api/v1/debrid/ { proxy_pass http://aiostreams:3000; include /etc/nginx/conf.d/proxy.inc; }
     location ^~ /static/ { proxy_pass http://aiostreams:3000; include /etc/nginx/conf.d/proxy.inc; }
 
-    # Profile creation from the Filmhub site (browser call, so CORS for that origin only).
+    # Profile creation from the Dublix site (browser call, so CORS for that origin only).
     location = /api/v1/user {
         if ($request_method = OPTIONS) {
             add_header Access-Control-Allow-Origin "${FILMHUB_SITE_ORIGIN}" always;

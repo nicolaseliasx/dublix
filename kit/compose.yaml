@@ -1,4 +1,4 @@
-# Filmhub self-host kit: AIOStreams with the Filmhub patches, smart subtitles and a small gateway.
+# Dublix self-host kit: AIOStreams with the Dublix patches, smart subtitles and a small gateway.
 # Usage: cp .env.example .env && edit it, then: docker compose up -d --build
 name: filmhub
 services:
@@ -12,7 +12,7 @@ services:
     environment:
       DATABASE_URI: sqlite://./data/db.sqlite
       # Anyone who can reach the gateway can create a profile, so the instance must not reach your home network
-      # (ALLOW_PRIVATE_URLS defaults to true upstream) and only accepts the regex/SEL lists the Filmhub profile syncs.
+      # (ALLOW_PRIVATE_URLS defaults to true upstream) and only accepts the regex/SEL lists the Dublix profile syncs.
       ALLOW_PRIVATE_URLS: "false"
       REGEX_FILTER_ACCESS: trusted
       WHITELISTED_REGEX_PATTERNS_URLS: '["https://git.tamtaro.de/Excluded-Regex.json","https://raw.githubusercontent.com/Vidhin05/Releases-Regex/main/English/regexes.json","https://git.tamtaro.de/for-nour-Regex.json"]'
@@ -42,7 +42,7 @@ services:
     image: nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de
     restart: unless-stopped
     environment:
-      FILMHUB_SITE_ORIGIN: ${FILMHUB_SITE_ORIGIN:-https://filmhub.ncls.cc}
+      FILMHUB_SITE_ORIGIN: ${FILMHUB_SITE_ORIGIN:-https://dublix.stremio.ncls.cc}
     ports:
       - "${FILMHUB_BIND:-127.0.0.1}:${FILMHUB_PORT:-8080}:8080"
     volumes:

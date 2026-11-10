@@ -42,7 +42,7 @@ test('sanitizeBase strips credentials, custom manifests, owner-only rules and pi
   assert.deepEqual(base.presets.find((p) => p.type === 'zilean').options.services, [DEBRID]);
   assert.deepEqual(base.presets.find((p) => p.type === 'comet').options.name, 'Comet');
   assert.deepEqual(base.catalogModifications.map((c) => c.id), ['tmdb.top']);
-  assert.equal(base.addonName, 'Filmhub');
+  assert.equal(base.addonName, 'Dublix');
   assert.deepEqual(findSecrets(base), []);
 });
 

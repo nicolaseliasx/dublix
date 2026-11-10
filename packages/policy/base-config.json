@@ -74,7 +74,7 @@
     }
   ],
   "trusted": false,
-  "addonName": "Filmhub",
+  "addonName": "Dublix",
   "addonLogo": "https://raw.githubusercontent.com/Tam-Taro/SEL-Filtering-and-Sorting/refs/heads/main/logo/aios.png",
   "addonDescription": "Custom AIOStreams powered by Tamtaro SEL Setup v3.2.6. Features advanced filtering with Stream Expression Language and smart sorting with Vidhin's Regex Patterns. Your personal all-in-one setup for the perfect Stremio experience.",
   "appliedTemplates": [
@@ -819,7 +819,7 @@
       "instanceId": "filmhub-regular-show-ptbr",
       "enabled": true,
       "options": {
-        "name": "Filmhub Regular Show PT-BR",
+        "name": "Dublix Regular Show PT-BR",
         "timeout": 8000,
         "resources": [
           "stream"
@@ -839,7 +839,7 @@
       "instanceId": "filmhub-ptbr",
       "enabled": true,
       "options": {
-        "name": "Filmhub PT-BR Sources",
+        "name": "Dublix PT-BR Sources",
         "timeout": 8000,
         "resources": [
           "stream"
@@ -862,7 +862,7 @@
       "instanceId": "filmhub-ptbr-verified",
       "enabled": true,
       "options": {
-        "name": "Filmhub PT-BR Comando",
+        "name": "Dublix PT-BR Comando",
         "timeout": 8000,
         "resources": [
           "stream"
@@ -885,7 +885,7 @@
       "instanceId": "filmhub-zilean",
       "enabled": true,
       "options": {
-        "name": "Filmhub Zilean",
+        "name": "Dublix Zilean",
         "timeout": 7000,
         "mediaTypes": [],
         "services": [
@@ -944,7 +944,7 @@
       "enabled": true,
       "category": "P2P",
       "options": {
-        "name": "Filmhub Torz",
+        "name": "Dublix Torz",
         "timeout": 8000,
         "mediaTypes": [],
         "services": [

@@ -10,4 +10,4 @@ createServer(async (req, res) => {
   const [status, body] = await route(new URL(req.url, 'http://localhost').pathname, handle);
   res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8', 'Access-Control-Allow-Origin': '*' });
   res.end(JSON.stringify(body));
-}).listen(port, host, () => console.log(`Filmhub Subs on ${host}:${port}`));
+}).listen(port, host, () => console.log(`Dublix Subs on ${host}:${port}`));

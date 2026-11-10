@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Filmhub for Stremio</title>
+  <title>Dublix for Stremio</title>
   <meta name="description" content="Your language first. Streams for Stremio: releases in your language first, original audio as a backup, organized by quality. Installs from your browser.">
   <meta name="color-scheme" content="dark">
   <link rel="preload" href="fonts/inter-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000'/%3E%3Cpath d='M10 8h12v3h-8.5v4H21v3h-7.5v6H10z' fill='%23ececec'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23000'/%3E%3Cpath fill-rule='evenodd' d='M9.5 8h6a8 8 0 0 1 0 16h-6z M13 11v10h2.5a5 5 0 0 0 0-10z' fill='%23ececec'/%3E%3C/svg%3E">
   <script type="module" src="app.js"></script>
 </head>
 <body>
   <header class="topbar">
-    <a class="brand" href="#">Filmhub</a>
+    <a class="brand" href="#">Dublix</a>
     <nav>
       <a href="#faq">FAQ</a>
-      <a href="https://github.com/nicolaseliasx/filmhub" rel="noopener">GitHub</a>
+      <a href="https://github.com/nicolaseliasx/dublix" rel="noopener">GitHub</a>
     </nav>
   </header>
 
@@ -28,7 +28,7 @@
 
     <div class="notice">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-6h2Zm0-8h-2V7h2Z"/></svg>
-      <p>Your other addons stay as they are. Filmhub only adds or updates its own entries, and you get a backup before anything changes. <a href="#tutorial">Step-by-step guide</a></p>
+      <p>Your other addons stay as they are. Dublix only adds or updates its own entries, and you get a backup before anything changes. <a href="#tutorial">Step-by-step guide</a></p>
     </div>
 
     <form id="setup" autocomplete="off" novalidate>
@@ -51,20 +51,20 @@
         <h2 id="s2"><span class="step">2</span>Debrid service</h2>
         <div id="services"></div>
         <button type="button" class="ghost" id="add-service">+ Add another service</button>
-        <p class="hint">Filmhub plays from your own debrid account. <a href="#faq-debrid">What is a debrid service?</a></p>
+        <p class="hint">Dublix plays from your own debrid account. <a href="#faq-debrid">What is a debrid service?</a></p>
       </section>
 
       <!-- 3. TMDB -->
       <section class="card" aria-labelledby="s3">
         <h2 id="s3"><span class="step">3</span>TMDB key <span class="optional">optional</span></h2>
         <input class="field mono" type="password" id="tmdb" placeholder="TMDB API key (v3) or read access token">
-        <p class="hint">Strongly recommended. With it, Filmhub checks titles and years, so you never get the next movie of a franchise by mistake. <a href="https://www.themoviedb.org/settings/api" rel="noopener">Get a free key</a> in about two minutes.</p>
+        <p class="hint">Strongly recommended. With it, Dublix checks titles and years, so you never get the next movie of a franchise by mistake. <a href="https://www.themoviedb.org/settings/api" rel="noopener">Get a free key</a> in about two minutes.</p>
         <p class="warn" id="tmdb-warn">Without a key, title and year checks are off: movies from the same franchise can be mixed up.</p>
       </section>
 
       <!-- 4. Server -->
       <section class="card" aria-labelledby="s4">
-        <h2 id="s4"><span class="step">4</span>Where should Filmhub run?</h2>
+        <h2 id="s4"><span class="step">4</span>Where should Dublix run?</h2>
         <label class="choice">
           <input type="radio" name="host" value="public" checked>
           <span><strong>Public instance</strong><small>Nothing to install. Runs on a community AIOStreams server.</small></span>
@@ -78,8 +78,8 @@
           <span><strong>My own server</strong><small>Unlocks fixed Brazilian (and some Spanish) season-pack names and a private instance. Verified audio is coming soon.</small></span>
         </label>
         <div class="indent" data-host-panel="own" hidden>
-          <input class="field mono" type="url" id="own-url" placeholder="https://filmhub.your-domain.com">
-          <p class="hint">Run the <a href="https://github.com/nicolaseliasx/filmhub/tree/main/kit" rel="noopener">self-host kit</a> first. You need Docker and an HTTPS address for it (a Cloudflare Tunnel works).</p>
+          <input class="field mono" type="url" id="own-url" placeholder="https://dublix.your-domain.com">
+          <p class="hint">Run the <a href="https://github.com/nicolaseliasx/dublix/tree/main/kit" rel="noopener">self-host kit</a> first. You need Docker and an HTTPS address for it (a Cloudflare Tunnel works).</p>
         </div>
       </section>
 
@@ -109,7 +109,7 @@
         <label class="choice compact"><input type="radio" name="subs" value="smart" checked>
           <span><strong id="subs-title">Smart Brazilian Portuguese subtitles</strong><small id="subs-desc"></small></span></label>
         <label class="choice compact"><input type="radio" name="subs" value="keep">
-          <span><strong>Keep my subtitle addons</strong><small>Filmhub does not touch subtitles.</small></span></label>
+          <span><strong>Keep my subtitle addons</strong><small>Dublix does not touch subtitles.</small></span></label>
       </section>
 
       <!-- 6. Install -->
@@ -123,12 +123,12 @@
         </div>
         <ol id="log" class="log" aria-live="polite"></ol>
         <div id="done" class="done" hidden>
-          <p><strong>Filmhub is installed.</strong> Open Stremio and pick any movie or episode.</p>
+          <p><strong>Dublix is installed.</strong> Open Stremio and pick any movie or episode.</p>
           <div class="actions">
             <a class="primary" href="stremio://" id="open-stremio">Open Stremio</a>
             <button type="button" class="secondary" id="profile-btn">Save profile details</button>
           </div>
-          <p class="hint">Profile details hold the password to edit your Filmhub configuration later. Keep the file private.</p>
+          <p class="hint">Profile details hold the password to edit your Dublix configuration later. Keep the file private.</p>
         </div>
       </section>
 
@@ -145,7 +145,7 @@
       <h2>Step by step</h2>
       <ol>
         <li><strong>Copy your Stremio AuthKey</strong> from web.stremio.com, signed in with the account you use on your TV.</li>
-        <li><strong>Add your debrid key</strong> (TorBox, Real-Debrid and others). Filmhub only lists files your service can play.</li>
+        <li><strong>Add your debrid key</strong> (TorBox, Real-Debrid and others). Dublix only lists files your service can play.</li>
         <li><strong>Add a TMDB key</strong> if you can. It keeps franchises and remakes apart.</li>
         <li><strong>Review and install.</strong> A backup of your current addons downloads first.</li>
         <li><strong>On the TV</strong>, restart Stremio. With smart subtitles, set the default subtitle language to <span data-lang="name">Portuguese (Brazil)</span> and turn on automatic subtitles in Stremio's settings.</li>
@@ -155,7 +155,7 @@
 
     <section id="faq" class="faq">
       <h2>FAQ</h2>
-      <details><summary>What does Filmhub do?</summary>
+      <details><summary>What does Dublix do?</summary>
         <p>It builds an <a href="https://github.com/Viren070/AIOStreams" rel="noopener">AIOStreams</a> profile for the language you pick: it searches several sources, keeps only what your debrid service can play, puts releases in your language (dubbed or dual-audio) first in each quality and keeps one original-audio option, unless you choose to see only your language. Then it adds that profile to your Stremio account.</p></details>
       <details><summary>How well does my language work?</summary>
         <p>Only Portuguese (Brazil) was measured on real titles. The other curated languages (English, Spanish for Latin America and Spain, French, Italian, German) use the same method with their own keywords and sources, but they have not been measured on real streams. Languages marked basic rely only on AIOStreams' language detection: no keyword list and no extra sources, so labels and ordering are less reliable.</p></details>
@@ -164,20 +164,20 @@
       <details id="faq-debrid"><summary>What is a debrid service?</summary>
         <p>A paid service (TorBox, Real-Debrid, AllDebrid, Premiumize, Debrid-Link, Offcloud) that fetches files on its servers and streams them to you over HTTPS. Easynews is a Usenet provider and works too.</p></details>
       <details><summary>Why do I need a TMDB key?</summary>
-        <p>It is optional, but it lets Filmhub compare the title and year of each release with what you asked for. Without it, Harry Potter Part 1 can show Part 2 at the top. The key is free and stays in your own profile.</p></details>
+        <p>It is optional, but it lets Dublix compare the title and year of each release with what you asked for. Without it, Harry Potter Part 1 can show Part 2 at the top. The key is free and stays in your own profile.</p></details>
       <details><summary>Why can a label like <span data-lang="dual">Dual áudio</span> or <span data-lang="dubbed">PT-BR</span> be wrong?</summary>
         <p>On a public instance the label comes from the file name, and some names lie. In our tests with Portuguese (Brazil), about one in six files named "dubbed" had no Portuguese track. Checking the real audio tracks needs a server; it is coming to the self-host kit.</p></details>
       <details><summary>What do I lose without a server?</summary>
         <p>About 95% of the list is the same (measured with Portuguese (Brazil)). A self-hosted instance also fixes Brazilian season-pack names, and partly Spanish ones (without it, some series can show the wrong episode first), and keeps your profile on your own machine. Audio-track verification is coming to the kit.</p></details>
       <details><summary>How do I undo it?</summary>
-        <p>Use <em>Restore a backup</em> with the file saved before the install, or remove the Filmhub addons in Stremio. Your other addons were never changed.</p></details>
+        <p>Use <em>Restore a backup</em> with the file saved before the install, or remove the Dublix addons in Stremio. Your other addons were never changed.</p></details>
       <details><summary>Where are my keys?</summary>
         <p>In your AIOStreams profile on the instance you chose, encrypted with the password this page generated. Save the profile details file to edit the profile later.</p></details>
     </section>
 
     <section class="credits prose">
       <h2>Credits</h2>
-      <p>Filmhub is a thin layer over the work of many people:</p>
+      <p>Dublix is a thin layer over the work of many people:</p>
       <ul>
         <li><a href="https://github.com/Viren070/AIOStreams" rel="noopener">AIOStreams</a> by Viren070, the engine behind every result.</li>
         <li><a href="https://github.com/Tam-Taro/SEL-Filtering-and-Sorting" rel="noopener">Tamtaro's templates</a> by Tam-Taro for filters, ranking and formatting, and <a href="https://github.com/Vidhin05/Releases-Regex" rel="noopener">Releases-Regex</a> by Vidhin05.</li>
@@ -187,10 +187,10 @@
         <li>The <a href="https://github.com/DryKillLogic/stremio-account-bootstrapper" rel="noopener">Stremio Account Bootstrapper</a> (DryKillLogic, after pancake3000 and redd-ravenn), which inspired this setup flow.</li>
         <li>The <a href="https://github.com/rsms/inter" rel="noopener">Inter</a> typeface by Rasmus Andersson.</li>
       </ul>
-      <p>Made by <a href="https://github.com/nicolaseliasx" rel="noopener">Nicolas Elias</a>. Filmhub is free software under the AGPL-3.0 and is not affiliated with Stremio, AIOStreams, TMDB, OpenSubtitles or any debrid service.</p>
+      <p>Made by <a href="https://github.com/nicolaseliasx" rel="noopener">Nicolas Elias</a>. Dublix is free software under the AGPL-3.0 and is not affiliated with Stremio, AIOStreams, TMDB, OpenSubtitles or any debrid service.</p>
     </section>
   </main>
 
-  <footer class="footer"><span>Filmhub · made by <a href="https://github.com/nicolaseliasx" rel="noopener">Nicolas Elias</a></span><a href="https://github.com/nicolaseliasx/filmhub" rel="noopener">Source code</a></footer>
+  <footer class="footer"><span>Dublix · made by <a href="https://github.com/nicolaseliasx" rel="noopener">Nicolas Elias</a></span><a href="https://github.com/nicolaseliasx/dublix" rel="noopener">Source code</a></footer>
 </body>
 </html>

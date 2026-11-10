@@ -1,6 +1,6 @@
 <div align="center">
 
-# Filmhub
+# Dublix
 
 **Your language first. Streams for Stremio.**
 
@@ -11,13 +11,15 @@ A one-page setup that builds a tuned [AIOStreams](https://github.com/Viren070/AI
 ![Dependencies: none](https://img.shields.io/badge/npm%20dependencies-0-brightgreen.svg)
 ![Made in Brazil](https://img.shields.io/badge/made%20in-Brazil-009c3b.svg)
 
+### [Open the setup site → dublix.stremio.ncls.cc](https://dublix.stremio.ncls.cc)
+
 </div>
 
 ---
 
 ## Why
 
-Stremio with a debrid service shows dozens of near-identical results, and finding the dubbed version in your language means scrolling and guessing. Filmhub keeps a short list per quality: your language first, then one original-audio option, cached results first, best quality first. It started as a Brazilian Portuguese setup for one household and grew into a public, language-aware tool.
+Stremio with a debrid service shows dozens of near-identical results, and finding the dubbed version in your language means scrolling and guessing. Dublix keeps a short list per quality: your language first, then one original-audio option, cached results first, best quality first. It started as a Brazilian Portuguese setup for one household and grew into a public, language-aware tool.
 
 ## Features
 
@@ -26,7 +28,7 @@ Stremio with a debrid service shows dozens of near-identical results, and findin
 - **Smart subtitles (optional).** No subtitles on files in your language; subtitles in your language on any other audio, from OpenSubtitles v3.
 - **No server needed.** The profile runs on a public AIOStreams instance; video goes straight from your debrid service to your device.
 - **Self-host kit** with fixes for Brazilian season-pack names, a private instance and your own subtitles server. See [kit/README.md](kit/README.md).
-- **Safe install.** Only Filmhub's own addons are added or replaced. A backup of your addon list downloads first, and the page can restore it. You paste a Stremio AuthKey; the page never asks for your Stremio password.
+- **Safe install.** Only Dublix's own addons are added or replaced. A backup of your addon list downloads first, and the page can restore it. You paste a Stremio AuthKey; the page never asks for your Stremio password.
 - **Debrid services:** TorBox, Real-Debrid, AllDebrid, Premiumize, Debrid-Link, Offcloud and Easynews.
 
 ## How it works
@@ -44,7 +46,7 @@ The setup page is static. Its only server-side parts are two small Cloudflare Pa
 
 ## Getting started
 
-1. Open the Filmhub setup site.
+1. Open **[dublix.stremio.ncls.cc](https://dublix.stremio.ncls.cc)**.
 2. Paste your Stremio AuthKey (the page shows how to copy it from web.stremio.com).
 3. Add your debrid key, and a free [TMDB](https://www.themoviedb.org/settings/api) key if you can: it keeps franchise entries apart.
 4. Pick your language, the qualities and how many options you want, then **Review** and **Install**.
@@ -66,9 +68,9 @@ The other languages passed a real-stream check on 9–15 titles each (no errors,
 | Path | What it is |
 | --- | --- |
 | `packages/policy` | List policy, language profiles, the public base profile and the profile builder. Pure ES modules for Node and the browser. |
-| `packages/stremio` | Non-destructive merge of the Filmhub addons into a Stremio addon collection. |
+| `packages/stremio` | Non-destructive merge of the Dublix addons into a Stremio addon collection. |
 | `packages/proxy` | The `/api/aio` bridge to allow-listed public instances. |
-| `packages/subs` | Filmhub Subs, one subtitles addon per language. |
+| `packages/subs` | Dublix Subs, one subtitles addon per language. |
 | `site/`, `functions/` | Setup site and its Cloudflare Pages Functions. |
 | `kit/` | Self-host kit: patched AIOStreams, subtitles and gateway. |
 | `scripts/`, `tests/e2e/` | Build, local preview, base profile export and browser tests. |
@@ -86,14 +88,14 @@ Browser tests, deployment and updating the base profile are described in [CONTRI
 
 ## Acknowledgements
 
-Filmhub is a thin layer over the work of many people. Thank you to:
+Dublix is a thin layer over the work of many people. Thank you to:
 
-- **[AIOStreams](https://github.com/Viren070/AIOStreams)** by [Viren070](https://github.com/Viren070), the engine that aggregates, filters, sorts and formats every result. Filmhub's kit patches it (`kit/compat`) under its AGPL-3.0 license.
+- **[AIOStreams](https://github.com/Viren070/AIOStreams)** by [Viren070](https://github.com/Viren070), the engine that aggregates, filters, sorts and formats every result. Dublix's kit patches it (`kit/compat`) under its AGPL-3.0 license.
 - **[Tamtaro's SEL filtering and sorting templates](https://github.com/Tam-Taro/SEL-Filtering-and-Sorting)** by [Tam-Taro](https://github.com/Tam-Taro): the base profile's filters, ranking expressions and result formatter come from the Tamtaro template.
 - **[Releases-Regex](https://github.com/Vidhin05/Releases-Regex)** by [Vidhin05](https://github.com/Vidhin05): release-group regexes and ranked expressions synced into the profile.
 - **[Torrentio](https://github.com/TheBeastLT/torrentio-scraper)** by [TheBeastLT](https://github.com/TheBeastLT), including its language-specific providers.
 - **[Zilean](https://github.com/iPromKnight/zilean)** by [iPromKnight](https://github.com/iPromKnight), **[MediaFusion](https://github.com/mhdzumair/MediaFusion)** by [mhdzumair](https://github.com/mhdzumair), **[Comet](https://github.com/g0ldyy/comet)** by [g0ldyy](https://github.com/g0ldyy) and **[StremThru](https://github.com/MunifTanjim/stremthru)** by [MunifTanjim](https://github.com/MunifTanjim), the other stream sources.
-- **[Stremio](https://www.stremio.com)**, its addon SDK and API, Cinemeta, and the **OpenSubtitles v3** addon used by Filmhub Subs, with subtitles from **[OpenSubtitles](https://www.opensubtitles.org)**.
+- **[Stremio](https://www.stremio.com)**, its addon SDK and API, Cinemeta, and the **OpenSubtitles v3** addon used by Dublix Subs, with subtitles from **[OpenSubtitles](https://www.opensubtitles.org)**.
 - The operators of the public AIOStreams instances the site offers (**Midnight's For the Weebs** and **For The Weak**) and **[ibbylabs](https://uptime.ibbylabs.dev)** for the health checks the profile uses.
 - **[Stremio Account Bootstrapper](https://github.com/DryKillLogic/stremio-account-bootstrapper)** by [DryKillLogic](https://github.com/DryKillLogic), building on pancake3000's original work and the redd-ravenn fork, which inspired the setup flow. No code was copied.
 - **[Inter](https://github.com/rsms/inter)** by Rasmus Andersson, the site's typeface (SIL Open Font License, see `site/fonts/OFL.txt`).
@@ -107,4 +109,4 @@ Created and maintained by **Nicolas Elias** ([@nicolaseliasx](https://github.com
 
 [AGPL-3.0](LICENSE). The kit's patches modify AIOStreams, which is also AGPL-3.0; if you run a modified version as a public service, publish your changes.
 
-Filmhub is not affiliated with Stremio, AIOStreams, TMDB, OpenSubtitles or any debrid service. It does not host, index or distribute any content; it configures software that you run against services you subscribe to.
+Dublix is not affiliated with Stremio, AIOStreams, TMDB, OpenSubtitles or any debrid service. It does not host, index or distribute any content; it configures software that you run against services you subscribe to.

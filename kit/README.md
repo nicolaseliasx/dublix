@@ -1,6 +1,6 @@
-# Filmhub self-host kit
+# Dublix self-host kit
 
-Runs your own Filmhub instance: AIOStreams v2.37.0 with the Filmhub patches, Filmhub Subs and a small gateway that exposes only what Stremio and the setup site need.
+Runs your own Dublix instance: AIOStreams v2.37.0 with the Dublix patches, Dublix Subs and a small gateway that exposes only what Stremio and the setup site need.
 
 What you get over a public instance:
 
@@ -18,7 +18,7 @@ Verified audio (inspecting real audio tracks to drop files whose name promises P
 ## Install
 
 ```sh
-git clone https://github.com/nicolaseliasx/filmhub && cd filmhub/kit
+git clone https://github.com/nicolaseliasx/dublix && cd dublix/kit
 cp .env.example .env
 sed -i "s/^SECRET_KEY=$/SECRET_KEY=$(openssl rand -hex 32)/" .env
 # edit BASE_URL (your HTTPS address) and point your tunnel at http://127.0.0.1:8080
@@ -26,7 +26,7 @@ docker compose up -d --build
 curl -s http://127.0.0.1:8080/api/v1/status
 ```
 
-Then open the Filmhub setup site, choose **My own server**, enter your `BASE_URL`, and install.
+Then open the Dublix setup site, choose **My own server**, enter your `BASE_URL`, and install.
 
 ## Exposure
 
@@ -34,17 +34,17 @@ The gateway (port `FILMHUB_PORT`, default 8080) serves:
 
 | Path | Purpose |
 | --- | --- |
-| `/stremio/*` (except `/stremio/configure`) | Your Filmhub addon for Stremio |
+| `/stremio/*` (except `/stremio/configure`) | Your Dublix addon for Stremio |
 | `/api/v1/debrid/*`, `/static/*` | Playback redirects to your debrid service |
 | `POST /api/v1/user`, `GET /api/v1/status` | Profile creation from the setup site (CORS for `FILMHUB_SITE_ORIGIN` only) |
-| `/subs/*` | Filmhub Subs (all languages) |
+| `/subs/*` | Dublix Subs (all languages) |
 
 Everything else answers 404, including the AIOStreams configure pages.
 
 Anyone who can reach the gateway can create a profile on your instance: that is how the setup site installs from the browser. The kit limits what such a profile can do:
 
 - `ALLOW_PRIVATE_URLS=false`: the instance never connects to private, loopback or link-local addresses, so a profile cannot reach your home network.
-- Regex filters and synced expression lists are limited to the lists the Filmhub profile uses (`REGEX_FILTER_ACCESS=trusted`, `SEL_SYNC_ACCESS=trusted` with explicit allow-lists in `compose.yaml`).
+- Regex filters and synced expression lists are limited to the lists the Dublix profile uses (`REGEX_FILTER_ACCESS=trusted`, `SEL_SYNC_ACCESS=trusted` with explicit allow-lists in `compose.yaml`).
 - Profile creation is rate limited at the gateway (10 per minute, burst 5). Behind a tunnel all visitors share this limit.
 
 Do not put the hostname behind a login page (such as Cloudflare Access): Stremio on your TV cannot pass it.

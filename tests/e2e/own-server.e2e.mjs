@@ -29,7 +29,7 @@ await page.waitForSelector('#done:not([hidden]), #log li.err', { timeout: 60000 
 console.log('     log:', (await page.textContent('#log')).replace(/\s+/g, ' '));
 assert(await page.isVisible('#done'), 'install through own server finished (direct browser call, CORS)');
 console.log('     collection:', collection.map((a) => `${a.manifest.name} <${a.transportUrl.slice(0, 40)}>`).join(' | '));
-assert(collection[1].transportUrl.startsWith(`${OWN}/stremio/`), 'Filmhub points at own server');
+assert(collection[1].transportUrl.startsWith(`${OWN}/stremio/`), 'Dublix points at own server');
 assert(collection[2].transportUrl === `${OWN}/subs/es-419/manifest.json` && collection[2].manifest.id === 'filmhub.subs.es-419', 'Spanish subs come from own server (per-language route through the gateway)');
 // Per-language subtitle routes are served by the kit as well (the gateway strips /subs).
 const kitManifest = await (await fetch(`${OWN}/subs/es-419/manifest.json`)).json();

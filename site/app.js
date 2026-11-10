@@ -1,4 +1,4 @@
-// Filmhub setup page. Everything runs in the browser; only /api/aio (profile creation on a public
+// Dublix setup page. Everything runs in the browser; only /api/aio (profile creation on a public
 // instance, which sends no CORS headers) goes through this site's Worker.
 import { buildFilmhubConfig } from './lib/policy/config.mjs';
 import { SERVICE_IDS } from './lib/policy/policy.mjs';
@@ -127,7 +127,7 @@ function instanceBase() {
   if (hostMode() === 'public') return { base: `https://${$('#instance').value}`, viaProxy: true };
   const raw = $('#own-url').value.trim().replace(/\/+$/, '');
   let url;
-  try { url = new URL(raw); } catch { throw new Error('Enter the address of your Filmhub server.'); }
+  try { url = new URL(raw); } catch { throw new Error('Enter the address of your Dublix server.'); }
   // Browsers block plain-HTTP calls from this HTTPS page except to this computer, so only exact loopback hosts may use HTTP.
   const loopback = ['localhost', '127.0.0.1'].includes(url.hostname);
   if (url.protocol !== 'https:' && !(url.protocol === 'http:' && loopback)) throw new Error('Your server must use HTTPS (plain HTTP only works for a server on this computer).');
@@ -180,7 +180,7 @@ const smartSubs = () => document.querySelector('input[name="subs"]:checked').val
 
 // ---------- build, create, install ----------
 async function buildConfig() {
-  basePromise ??= fetch('lib/policy/base-config.json').then((r) => { if (!r.ok) throw new Error('Could not load the Filmhub base configuration.'); return r.json(); });
+  basePromise ??= fetch('lib/policy/base-config.json').then((r) => { if (!r.ok) throw new Error('Could not load the Dublix base configuration.'); return r.json(); });
   return buildFilmhubConfig(await basePromise, { services: readServices(), tmdbApiKey: $('#tmdb').value, ...readOptions() });
 }
 async function createProfile(config, { base, viaProxy }, onRetry) {
@@ -222,7 +222,7 @@ function listItem(tag, text) {
 }
 function renderReview(changes, current) {
   const touched = new Set(changes.flatMap((c) => [c.name, c.with]));
-  const kept = current.map((a) => a.manifest?.name).filter((n) => n && !touched.has(n) && n !== 'Filmhub' && !n.startsWith('Filmhub Subs'));
+  const kept = current.map((a) => a.manifest?.name).filter((n) => n && !touched.has(n) && !['Dublix', 'Filmhub'].includes(n) && !n.startsWith('Dublix Subs') && !n.startsWith('Filmhub Subs'));
   const ul = document.createElement('ul');
   for (const c of changes) ul.append(listItem(c.action, c.with ? `${c.name} → ${c.with}` : c.name));
   for (const n of kept) ul.append(listItem('keep', n));
@@ -242,7 +242,7 @@ $('#review-btn').addEventListener('click', async () => {
     step(`Connected. Your account has ${state.collection.length} addons.`);
     const placeholder = (name, id) => ({ transportUrl: `https://placeholder/${id}/x/manifest.json`, manifest: { id, name }, flags: {} });
     const { changes } = mergeCollection(state.collection, {
-      streams: placeholder('Filmhub', 'filmhub.preview'), subs: smartSubs() ? placeholder(manifestFor(language().id).name, manifestFor(language().id).id) : null,
+      streams: placeholder('Dublix', 'filmhub.preview'), subs: smartSubs() ? placeholder(manifestFor(language().id).name, manifestFor(language().id).id) : null,
     });
     renderReview(changes, state.collection);
     $('#install-btn').disabled = false;
@@ -258,9 +258,9 @@ $('#setup').addEventListener('submit', async (event) => {
     download(`stremio-addons-backup-${stamp()}.json`, { savedAt: new Date().toISOString(), addons: state.collection });
     log('Backup of your current addons downloaded.', 'ok');
     const config = await buildConfig();
-    let step = log('Creating your Filmhub profile…');
+    let step = log('Creating your Dublix profile…');
     state.profile = await createProfile(config, instanceBase(), (n) => step(`A source was slow to answer; trying again (${n}/2)…`, 'run'));
-    step('Filmhub profile created.');
+    step('Dublix profile created.');
     step = log('Checking the addons…');
     const streams = await descriptor(state.profile.manifestUrl);
     const subs = smartSubs() ? await descriptor(subsUrl()) : null;
@@ -281,7 +281,7 @@ $('#setup').addEventListener('submit', async (event) => {
   }
 });
 
-$('#profile-btn').addEventListener('click', () => state.profile && download(`filmhub-profile-${stamp()}.json`, state.profile));
+$('#profile-btn').addEventListener('click', () => state.profile && download(`dublix-profile-${stamp()}.json`, state.profile));
 
 let restoreAddons = null;
 $('#restore-file').addEventListener('change', async () => {
@@ -293,7 +293,7 @@ $('#restore-file').addEventListener('change', async () => {
   try {
     const backup = JSON.parse(await file.text());
     if (!Array.isArray(backup.addons) || !backup.addons.length || !backup.addons.every((a) => a?.transportUrl && a?.manifest?.id)) {
-      throw new Error('This is not a Filmhub backup file.');
+      throw new Error('This is not a Dublix backup file.');
     }
     restoreAddons = backup.addons;
     // Show exactly what will be installed: a file from someone else could add any addon.

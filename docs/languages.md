@@ -46,4 +46,4 @@ Ten profiles were run on 9–15 popular titles each against a stock AIOStreams v
 
 ## Subtitles addon routes
 
-`/subs/manifest.json` is Brazilian Portuguese with the same addon id as before (`filmhub.subs`), so existing installs keep working. Every other language is `/subs/<language id>/manifest.json` (id `filmhub.subs.<id>`, name `Filmhub Subs <language>`), for example `/subs/es-419/manifest.json`. The site installs the one matching the chosen language and replaces any other Filmhub Subs variant. A language without file-name dub tokens (basic) offers subtitles on every file.
+`/subs/manifest.json` is Brazilian Portuguese with the same addon id as before (`filmhub.subs`), so existing installs keep working. Every other language is `/subs/<language id>/manifest.json` (id `filmhub.subs.<id>`, name `Dublix Subs <language>`), for example `/subs/es-419/manifest.json`. The site installs the one matching the chosen language and replaces any other Dublix Subs variant. A language without file-name dub tokens (basic) offers subtitles on every file.

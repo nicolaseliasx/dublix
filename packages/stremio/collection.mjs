@@ -1,12 +1,14 @@
-// Non-destructive merge of the Filmhub addons into a Stremio addon collection.
-// Only Filmhub's own entries (and, on request, OpenSubtitles v3) are touched; everything else keeps its content and order.
+// Non-destructive merge of the Dublix addons into a Stremio addon collection.
+// Only Dublix's own entries (and, on request, OpenSubtitles v3) are touched; everything else keeps its content and order.
 export const OPENSUBTITLES_ID = 'org.stremio.opensubtitlesv3';
 export const SUBS_ID = 'filmhub.subs';
 const CINEMETA_ID = 'com.linvo.cinemeta';
 
 const valid = (a) => a && typeof a.transportUrl === 'string' && a.manifest && typeof a.manifest.id === 'string';
-export const isFilmhubStreams = (a) => valid(a) && a.manifest.name === 'Filmhub' && /\/stremio\/[^/]+\/[^/]+\/manifest\.json$/.test(a.transportUrl);
-// Filmhub Subs has one addon per language: `filmhub.subs` (pt-BR) and `filmhub.subs.<language id>`.
+// The product was called Filmhub before Dublix: installs under the old name are still recognised (and replaced in place).
+const STREAMS_NAMES = ['Dublix', 'Filmhub'];
+export const isFilmhubStreams = (a) => valid(a) && STREAMS_NAMES.includes(a.manifest.name) && /\/stremio\/[^/]+\/[^/]+\/manifest\.json$/.test(a.transportUrl);
+// Dublix Subs has one addon per language: `filmhub.subs` (pt-BR) and `filmhub.subs.<language id>`.
 const SUBS_VARIANT = /^filmhub\.subs(\.[A-Za-z0-9-]+)?$/;
 export const isFilmhubSubs = (a) => valid(a) && SUBS_VARIANT.test(a.manifest.id);
 
@@ -25,8 +27,8 @@ export function mergeCollection(current, { streams, subs = null, replaceOpenSubt
   for (const addon of current) {
     // Every entry dropped here is reported, so the review shows all removals (duplicates included).
     if (isFilmhubStreams(addon)) {
-      if (!streamsPlaced) { addons.push(streams); changes.push({ action: 'replace', name: 'Filmhub' }); streamsPlaced = true; }
-      else changes.push({ action: 'remove', name: 'Filmhub' });
+      if (!streamsPlaced) { addons.push(streams); changes.push({ action: 'replace', name: 'Dublix' }); streamsPlaced = true; }
+      else changes.push({ action: 'remove', name: 'Dublix' });
       continue;
     }
     if (isFilmhubSubs(addon)) {
@@ -48,7 +50,7 @@ export function mergeCollection(current, { streams, subs = null, replaceOpenSubt
   if (!streamsPlaced) {
     const cinemeta = addons.findIndex((a) => a.manifest?.id === CINEMETA_ID);
     addons.splice(cinemeta + 1, 0, streams);
-    changes.unshift({ action: 'add', name: 'Filmhub' });
+    changes.unshift({ action: 'add', name: 'Dublix' });
   }
   if (subs && !subsPlaced) {
     const after = addons.indexOf(streams);

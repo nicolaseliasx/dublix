@@ -1,4 +1,4 @@
-// Cloudflare Pages Function: /subs/* — the Filmhub Subs addon (stateless; the cache lives per isolate).
+// Cloudflare Pages Function: /subs/* — the Dublix Subs addon (stateless; the cache lives per isolate).
 import { createHandler, httpJson, route } from '../../packages/subs/subs.mjs';
 
 const handle = createHandler({ fetchJson: httpJson });

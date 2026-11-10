@@ -83,7 +83,7 @@ await page.click('#review-btn');
 await page.waitForSelector('#review:not([hidden])');
 const review = await page.textContent('#review');
 console.log('     review:', review.replace(/\s+/g, ' '));
-assert(/add\s*Filmhub/.test(review) && /OpenSubtitles v3<img src=x id=pwned> → Filmhub Subs/.test(review) && /keep\s*Torrentio/.test(review), 'review lists add / replace / keep');
+assert(/add\s*Dublix/.test(review) && /OpenSubtitles v3<img src=x id=pwned> → Dublix Subs/.test(review) && /keep\s*Torrentio/.test(review), 'review lists add / replace / keep');
 assert(await page.locator('#review img, #pwned').count() === 0, 'addon names are shown as text, never as HTML');
 assert(!(await page.isDisabled('#install-btn')), 'install enabled after review');
 await page.screenshot({ path: `${OUT}desktop-review.png`, fullPage: true });
@@ -103,8 +103,8 @@ assert(createdConfig.formatter.definitions.custom.description.startsWith('{strea
 assert(createdConfig.presets.some((p) => p.instanceId === 'filmhub-ptbr') && createdConfig.preferredLanguages[0] === 'Portuguese (Brazil)', 'default install uses the pt-BR sources and language order');
 const names = collection.map((a) => a.manifest.name);
 console.log('     collection:', names.join(' | '));
-assert(names.join() === 'Cinemeta,Filmhub,Torrentio,Filmhub Subs,Local Files', 'Stremio collection merged in place (subs take OpenSubtitles slot)');
-assert(collection[1].transportUrl.startsWith('https://aiostreamsfortheweebs.midnightignite.me/stremio/'), 'Filmhub points at the chosen instance');
+assert(names.join() === 'Cinemeta,Dublix,Torrentio,Dublix Subs,Local Files', 'Stremio collection merged in place (subs take OpenSubtitles slot)');
+assert(collection[1].transportUrl.startsWith('https://aiostreamsfortheweebs.midnightignite.me/stremio/'), 'Dublix points at the chosen instance');
 assert(collection[3].transportUrl === `${SITE}/subs/manifest.json`, 'subs point at this site');
 assert(JSON.stringify(collection[2]) === JSON.stringify(initial[1]), 'Torrentio descriptor untouched');
 const saved = JSON.parse((await import('node:fs')).readFileSync(backupPath, 'utf8'));
@@ -139,7 +139,7 @@ assert(await page.isDisabled('#orig-slots'), 'only-my-language disables the orig
 await page.click('#review-btn');
 await page.waitForSelector('#review:not([hidden]), #log li.err');
 const reviewEs = await page.textContent('#review');
-assert(/OpenSubtitles v3<img src=x id=pwned> → Filmhub Subs Spanish \(Latin America\)/.test(reviewEs), 'review shows the Spanish subtitles addon replacing OpenSubtitles');
+assert(/OpenSubtitles v3<img src=x id=pwned> → Dublix Subs Spanish \(Latin America\)/.test(reviewEs), 'review shows the Spanish subtitles addon replacing OpenSubtitles');
 await page.click('#install-btn');
 await page.waitForSelector('#done:not([hidden]), #log li.err', { timeout: 60000 });
 assert(await page.isVisible('#done'), 'Spanish install finished');
@@ -150,23 +150,23 @@ assert(!JSON.stringify(createdConfig).match(/Portuguese|PT-BR|dublado/i), 'creat
 assert(createdConfig.resultLimits.global === 4 && createdConfig.excludedStreamExpressions.some((e) => e.expression.includes('só o idioma')), 'only-my-language: 2 tiers x 2, no original audio');
 const esNames = collection.map((a) => a.manifest.name);
 console.log('     collection:', esNames.join(' | '));
-assert(esNames.join() === 'Cinemeta,Filmhub,Torrentio,Filmhub Subs Spanish (Latin America),Local Files', 'Spanish subtitles addon took the OpenSubtitles slot');
+assert(esNames.join() === 'Cinemeta,Dublix,Torrentio,Dublix Subs Spanish (Latin America),Local Files', 'Spanish subtitles addon took the OpenSubtitles slot');
 assert(collection[3].transportUrl === `${SITE}/subs/es-419/manifest.json` && collection[3].manifest.id === 'filmhub.subs.es-419', 'subs come from this site\'s per-language route');
 const manifestPt = await (await fetch(`${SITE}/subs/manifest.json`)).json();
-assert(manifestPt.id === 'filmhub.subs' && manifestPt.name === 'Filmhub Subs', 'the original /subs/manifest.json is still pt-BR');
+assert(manifestPt.id === 'filmhub.subs' && manifestPt.name === 'Dublix Subs', 'the original /subs/manifest.json is still pt-BR');
 const esSubs = await (await fetch(`${SITE}/subs/es-419/subtitles/movie/tt0133093/${encodeURIComponent('filename=Matrix.1999.Latino.1080p.mkv')}.json`)).json();
 assert(Array.isArray(esSubs.subtitles) && esSubs.subtitles.length === 0, 'a Latino-dubbed file gets no subtitles from the Spanish addon');
-// Back to pt-BR: the Spanish subtitles addon is replaced in place by the original Filmhub Subs.
+// Back to pt-BR: the Spanish subtitles addon is replaced in place by the original Dublix Subs.
 await page.selectOption('#language', 'pt-BR');
 await page.uncheck('#language-only');
 assert(!(await page.isDisabled('#orig-slots')), 'original-audio count is enabled again');
 await page.click('#review-btn');
 await page.waitForSelector('#review:not([hidden]), #log li.err');
-assert(/Filmhub Subs Spanish \(Latin America\) → Filmhub Subs/.test(await page.textContent('#review')), 'review shows the Spanish addon replaced by pt-BR');
+assert(/Dublix Subs Spanish \(Latin America\) → Dublix Subs/.test(await page.textContent('#review')), 'review shows the Spanish addon replaced by pt-BR');
 await page.click('#install-btn');
 await page.waitForSelector('#done:not([hidden]), #log li.err', { timeout: 60000 });
 assert(createdConfig.preferredLanguages[0] === 'Portuguese (Brazil)', 'pt-BR again');
-assert(collection.map((a) => a.manifest.name).join() === 'Cinemeta,Filmhub,Torrentio,Filmhub Subs,Local Files' && collection[3].transportUrl === `${SITE}/subs/manifest.json`, 'pt-BR subtitles are back at /subs/manifest.json');
+assert(collection.map((a) => a.manifest.name).join() === 'Cinemeta,Dublix,Torrentio,Dublix Subs,Local Files' && collection[3].transportUrl === `${SITE}/subs/manifest.json`, 'pt-BR subtitles are back at /subs/manifest.json');
 // A basic language is clearly marked.
 await page.selectOption('#language', 'ja');
 assert(await page.isVisible('#language-basic') && (await page.textContent('#language-basic')).includes('Basic support'), 'basic languages carry a warning');
