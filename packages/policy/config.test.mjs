@@ -111,9 +111,32 @@ test('without a TMDB key the TMDB-only features are switched off (instances reje
   assert.equal(on.digitalReleaseFilter.enabled, true);
 });
 
+test('no debrid: enables P2P, disables wrapping and cloud library, and keeps language limits without cache-only rules', () => {
+  const input = { ...sanitizeBase(owner()), excludedStreamTypes: ['p2p', 'http', 'live'] };
+  const before = structuredClone(input);
+  const cfg = buildFilmhubConfig(input, { services: [], tiers: ['1080p'], ptSlots: 2, originalSlots: 1 });
+  assert.deepEqual(input, before);
+  assert.deepEqual(cfg.services, []);
+  assert.deepEqual(cfg.excludedStreamTypes, ['http', 'live']);
+  assert.equal(cfg.serviceWrap.enabled, false);
+  assert.deepEqual(cfg.serviceWrap.services, []);
+  assert.equal(cfg.presets.find((p) => p.type === 'library').enabled, false);
+  assert.equal(cfg.presets.find((p) => p.type === 'zilean').enabled, false, 'Zilean requires a usable debrid service');
+  assert.ok(cfg.presets.find((p) => p.type === 'torrentio').enabled);
+  assert.ok(cfg.presets.filter((p) => p.enabled).every((p) => p.type === 'torrentio'),
+    'P2P uses Torrentio sources; debrid-only and P2P-disabled public addons must not block installation');
+  assert.equal(cfg.resultLimits.global, 3);
+  assert.equal(cfg.resultLimits.resolution, 3);
+  const rules = cfg.excludedStreamExpressions.map((e) => e.expression).join('\n');
+  assert.doesNotMatch(rules, /cached\(|passthrough\(/);
+  assert.match(rules, /faixa 1080p PT-BR/);
+  assert.match(rules, /faixa 1080p original/);
+  assert.deepEqual(cfg.sortCriteria.global.slice(0, 3).map((c) => c.key), ['resolution', 'streamExpressionMatched', 'seeders']);
+});
+
 test('buildFilmhubConfig rejects missing or malformed credentials and unknown services', () => {
   const base = sanitizeBase(owner());
-  for (const services of [[], [{ id: 'nope', credentials: { apiKey: 'k' } }], [{ id: 'torbox', credentials: {} }],
+  for (const services of [undefined, null, {}, [{ id: 'nope', credentials: { apiKey: 'k' } }], [{ id: 'torbox', credentials: {} }],
     [{ id: 'torbox', credentials: { apiKey: '  ' } }], [{ id: 'easynews', credentials: { apiKey: 'k' } }],
     [{ id: 'torbox', credentials: { apiKey: 'a' } }, { id: 'torbox', credentials: { apiKey: 'b' } }]]) {
     assert.throws(() => buildFilmhubConfig(base, { services }), TypeError, JSON.stringify(services));

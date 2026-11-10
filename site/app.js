@@ -70,6 +70,17 @@ async function getCollection(authKey) {
 const setCollection = (authKey, addons) => stremio('addonCollectionSet', { type: 'AddonCollectionSet', authKey, addons });
 
 // ---------- step 2: debrid services ----------
+let cachedPreference = $('#cached-only').checked;
+function updateServiceMode() {
+  const noDebrid = $$('.service-row').length === 0;
+  const cached = $('#cached-only');
+  if (noDebrid && !cached.disabled) cachedPreference = cached.checked;
+  cached.checked = noDebrid ? false : cachedPreference;
+  cached.disabled = noDebrid;
+  $('#no-debrid-warn').hidden = !noDebrid;
+  $('#add-service').textContent = noDebrid ? '+ Add a service' : '+ Add another service';
+}
+$('#cached-only').addEventListener('change', () => { cachedPreference = $('#cached-only').checked; });
 function serviceRow(id = 'torbox') {
   const row = document.createElement('div');
   row.className = 'service-row';
@@ -87,10 +98,16 @@ function serviceRow(id = 'torbox') {
       : `<input class="field mono" type="password" data-cred="apiKey" placeholder="${SERVICE_LABELS[select.value]} API key">`;
   };
   select.addEventListener('change', () => { renderCreds(); resetReview(); });
-  remove.addEventListener('click', () => { if ($$('.service-row').length > 1) { row.remove(); resetReview(); } });
+  remove.addEventListener('click', () => {
+    if ($$('.service-row').length === 1 && !confirm('Continue without a debrid service? Dublix will use P2P torrents, which depend on available seeds and may be slow, buffer or fail to play. You need a Stremio player with P2P support; your IP is visible to peers.')) return;
+    row.remove();
+    updateServiceMode();
+    resetReview();
+  });
   renderCreds();
   row.append(select, creds, remove);
   $('#services').append(row);
+  updateServiceMode();
 }
 const readServices = () => $$('.service-row').map((row) => ({
   id: row.querySelector('select').value,
@@ -99,6 +116,7 @@ const readServices = () => $$('.service-row').map((row) => ({
 $('#add-service').addEventListener('click', () => {
   const used = new Set(readServices().map((s) => s.id));
   serviceRow(SERVICE_IDS.find((s) => !used.has(s)) ?? 'torbox');
+  resetReview();
 });
 
 // ---------- step 3: TMDB ----------

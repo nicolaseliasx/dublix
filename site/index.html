@@ -48,10 +48,11 @@
 
       <!-- 2. Debrid -->
       <section class="card" aria-labelledby="s2">
-        <h2 id="s2"><span class="step">2</span>Debrid service</h2>
+        <h2 id="s2"><span class="step">2</span>Debrid service <span class="optional">optional</span></h2>
         <div id="services"></div>
         <button type="button" class="ghost" id="add-service">+ Add another service</button>
-        <p class="hint">Dublix plays from your own debrid account. <a href="#faq-debrid">What is a debrid service?</a></p>
+        <p class="hint">Recommended for faster, more reliable playback. Remove the service with × to use P2P without debrid. <a href="#faq-debrid">What is a debrid service?</a></p>
+        <p class="warn" id="no-debrid-warn" role="status" hidden>Without debrid, playback depends on torrent seeds and may be slow, buffer or fail. Use a Stremio player with P2P support. Your IP is visible to peers.</p>
       </section>
 
       <!-- 3. TMDB -->
@@ -145,7 +146,7 @@
       <h2>Step by step</h2>
       <ol>
         <li><strong>Copy your Stremio AuthKey</strong> from web.stremio.com, signed in with the account you use on your TV.</li>
-        <li><strong>Add your debrid key</strong> (TorBox, Real-Debrid and others). Dublix only lists files your service can play.</li>
+        <li><strong>Add your debrid key</strong> (TorBox, Real-Debrid and others), or remove the service with × to use P2P torrents without debrid.</li>
         <li><strong>Add a TMDB key</strong> if you can. It keeps franchises and remakes apart.</li>
         <li><strong>Review and install.</strong> A backup of your current addons downloads first.</li>
         <li><strong>On the TV</strong>, restart Stremio. With smart subtitles, set the default subtitle language to <span data-lang="name">Portuguese (Brazil)</span> and turn on automatic subtitles in Stremio's settings.</li>
@@ -156,13 +157,15 @@
     <section id="faq" class="faq">
       <h2>FAQ</h2>
       <details><summary>What does Dublix do?</summary>
-        <p>It builds an <a href="https://github.com/Viren070/AIOStreams" rel="noopener">AIOStreams</a> profile for the language you pick: it searches several sources, keeps only what your debrid service can play, puts releases in your language (dubbed or dual-audio) first in each quality and keeps one original-audio option, unless you choose to see only your language. Then it adds that profile to your Stremio account.</p></details>
+        <p>It builds an <a href="https://github.com/Viren070/AIOStreams" rel="noopener">AIOStreams</a> profile for the language you pick: it searches several sources, uses your debrid service or P2P torrents, puts releases in your language (dubbed or dual-audio) first in each quality and keeps one original-audio option, unless you choose to see only your language. Then it adds that profile to your Stremio account.</p></details>
       <details><summary>How well does my language work?</summary>
         <p>Only Portuguese (Brazil) was measured on real titles. The other curated languages (English, Spanish for Latin America and Spain, French, Italian, German) use the same method with their own keywords and sources, but they have not been measured on real streams. Languages marked basic rely only on AIOStreams' language detection: no keyword list and no extra sources, so labels and ordering are less reliable.</p></details>
       <details><summary>Does my traffic go through someone's server?</summary>
-        <p>Video plays from your debrid service straight to your device. The search runs on the AIOStreams instance you picked (a public one, or your own). This site only passes your configuration to that instance once, to create the profile; it stores nothing.</p></details>
+        <p>Video plays from your debrid service straight to your device, or from torrent peers when using P2P without debrid. The search runs on the AIOStreams instance you picked (a public one, or your own). This site only passes your configuration to that instance once, to create the profile; it stores nothing.</p></details>
       <details id="faq-debrid"><summary>What is a debrid service?</summary>
         <p>A paid service (TorBox, Real-Debrid, AllDebrid, Premiumize, Debrid-Link, Offcloud) that fetches files on its servers and streams them to you over HTTPS. Easynews is a Usenet provider and works too.</p></details>
+      <details><summary>Can I use Dublix without debrid?</summary>
+        <p>Yes: remove the last service with × and accept the warning. Dublix will return P2P torrents and prioritize those with more seeds. Playback may be slower or unavailable and requires a Stremio player with P2P support. Browsers and some TV players need an external Stremio streaming server; the AIOStreams app does not play P2P torrents. Your IP is visible to torrent peers.</p></details>
       <details><summary>Why do I need a TMDB key?</summary>
         <p>It is optional, but it lets Dublix compare the title and year of each release with what you asked for. Without it, Harry Potter Part 1 can show Part 2 at the top. The key is free and stays in your own profile.</p></details>
       <details><summary>Why can a label like <span data-lang="dual">Dual áudio</span> or <span data-lang="dubbed">PT-BR</span> be wrong?</summary>

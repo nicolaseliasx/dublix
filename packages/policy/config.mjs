@@ -129,7 +129,7 @@ export function localizeBase(base, language) {
 }
 
 function validServices(services) {
-  if (!Array.isArray(services) || !services.length) throw new TypeError('choose at least one debrid service');
+  if (!Array.isArray(services)) throw new TypeError('services must be an array (empty for P2P)');
   const seen = new Set();
   return services.map(({ id, credentials = {} }) => {
     if (!SERVICE_IDS.includes(id) || seen.has(id)) throw new TypeError(`unknown or repeated service: ${id}`);
@@ -154,6 +154,9 @@ export function buildFilmhubConfig(base, { services, tmdbApiKey = '', anime = fa
   const cfg = localizeBase(structuredClone(base), profile);
   cfg.services = chosen;
   for (const p of cfg.presets) {
+    // Public P2P endpoints of the other presets may require debrid or return 404,
+    // which makes AIOStreams reject the whole profile. Torrentio works without a service.
+    if (!chosen.length && p.type !== 'torrentio') p.enabled = false;
     if (!Array.isArray(p.options?.services)) continue;
     p.options.services = swap(p.options.services, ids);
     if (p.type === 'library') {
@@ -162,6 +165,10 @@ export function buildFilmhubConfig(base, { services, tmdbApiKey = '', anime = fa
     }
   }
   if (cfg.serviceWrap) cfg.serviceWrap.services = swap(cfg.serviceWrap.services, ids);
+  if (!chosen.length) {
+    cfg.excludedStreamTypes = (cfg.excludedStreamTypes ?? []).filter((type) => type !== 'p2p');
+    if (cfg.serviceWrap) cfg.serviceWrap.enabled = false;
+  }
   cfg.tmdbApiKey = typeof tmdbApiKey === 'string' ? tmdbApiKey.trim() : '';
   // AIOStreams refuses title/year matching and the digital release filter without TMDB access,
   // and public instances ship without a TMDB key: switch them off instead of failing the install.
@@ -169,5 +176,5 @@ export function buildFilmhubConfig(base, { services, tmdbApiKey = '', anime = fa
     for (const k of ['titleMatching', 'yearMatching', 'digitalReleaseFilter']) if (cfg[k]) cfg[k] = { ...cfg[k], enabled: false };
     if (cfg.bitrate?.useMetadataRuntime) cfg.bitrate = { ...cfg.bitrate, useMetadataRuntime: false };
   }
-  return applyNextPolicy(cfg, { anime, language, excludeServices: [], ...policy });
+  return applyNextPolicy(cfg, { anime, language, excludeServices: [], ...policy, p2p: !chosen.length });
 }

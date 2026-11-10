@@ -4,7 +4,7 @@
 
 **Your language first. Streams for Stremio.**
 
-A one-page setup that builds a tuned [AIOStreams](https://github.com/Viren070/AIOStreams) profile for your debrid account, puts releases in your language (dubbed or dual-audio) first in every quality, and installs it into your Stremio account without touching your other addons.
+A one-page setup that builds a tuned [AIOStreams](https://github.com/Viren070/AIOStreams) profile for your debrid account or P2P torrents, puts releases in your language (dubbed or dual-audio) first in every quality, and installs it into your Stremio account without touching your other addons.
 
 [![License: AGPL-3.0](https://img.shields.io/badge/license-AGPL--3.0-blue.svg)](LICENSE)
 ![Node.js 20+](https://img.shields.io/badge/node-%3E%3D20-339933.svg)
@@ -30,6 +30,7 @@ Stremio with a debrid service shows dozens of near-identical results, and findin
 - **Self-host kit** with fixes for Brazilian season-pack names, a private instance and your own subtitles server. See [kit/README.md](kit/README.md).
 - **Safe install.** Only Dublix's own addons are added or replaced. A backup of your addon list downloads first, and the page can restore it. You paste a Stremio AuthKey; the page never asks for your Stremio password.
 - **Debrid services:** TorBox, Real-Debrid, AllDebrid, Premiumize, Debrid-Link, Offcloud and Easynews.
+- **Debrid is optional.** Remove the last service with × and accept the warning to use P2P torrents from Torrentio. Seeds determine availability and speed; playback may buffer or fail. A Stremio player with P2P support is required, and your IP is visible to peers. Within each language and quality, torrents with more seeds come first. Other sources and the cloud library are disabled in this mode because their public endpoints may require debrid or reject P2P configurations.
 
 ## How it works
 
@@ -68,7 +69,7 @@ The setup page is static. Its only server-side parts are two small Cloudflare Pa
 
 1. Open **[dublix.stremio.ncls.cc](https://dublix.stremio.ncls.cc)**.
 2. Paste your Stremio AuthKey (the page shows how to copy it from web.stremio.com).
-3. Add your debrid key, and a free [TMDB](https://www.themoviedb.org/settings/api) key if you can: it keeps franchise entries apart.
+3. Add your debrid key, or remove the service with × to use P2P. Add a free [TMDB](https://www.themoviedb.org/settings/api) key if you can: it keeps franchise entries apart.
 4. Pick your language, the qualities and how many options you want, then **Review** and **Install**.
 
 To run your own instance instead of a public one, follow [kit/README.md](kit/README.md) and choose **My own server** on the page.
@@ -87,6 +88,7 @@ The other languages passed a real-stream check on 9–15 titles each (no errors,
 
 | Path | What it is |
 | --- | --- |
+| [AGENTS.md](./AGENTS.md) | Project checks and invariants for agents; [CLAUDE.md](./CLAUDE.md) includes it. |
 | `packages/policy` | List policy, language profiles, the public base profile and the profile builder. Pure ES modules for Node and the browser. |
 | `packages/stremio` | Non-destructive merge of the Dublix addons into a Stremio addon collection. |
 | `packages/proxy` | The `/api/aio` bridge to allow-listed public instances. |

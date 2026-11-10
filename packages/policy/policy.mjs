@@ -83,7 +83,7 @@ export const SERVICE_IDS = ['realdebrid', 'alldebrid', 'premiumize', 'debridlink
 export const POLICY_LIMITS = { tiers: [...TIERS], maxSlots: 3 };
 
 // ptSlots is the number of options per quality in the chosen language (the name predates the language profiles).
-function resolveOptions({ tiers = TIERS, ptSlots = PT_SLOTS, originalSlots = ORIGINAL_SLOTS, excludeServices = ['realdebrid'], cachedOnly = true, languageOnly = false }) {
+function resolveOptions({ tiers = TIERS, ptSlots = PT_SLOTS, originalSlots = ORIGINAL_SLOTS, excludeServices = ['realdebrid'], cachedOnly = true, languageOnly = false, p2p = false }) {
   const slot = (v) => Number.isInteger(v) && v >= 0 && v <= POLICY_LIMITS.maxSlots;
   if (!Array.isArray(tiers) || !tiers.length || new Set(tiers).size !== tiers.length || tiers.some((t) => !TIERS.includes(t))) {
     throw new TypeError(`tiers must be a non-empty subset of ${TIERS.join(', ')}`);
@@ -98,8 +98,9 @@ function resolveOptions({ tiers = TIERS, ptSlots = PT_SLOTS, originalSlots = ORI
   }
   if (typeof cachedOnly !== 'boolean') throw new TypeError('cachedOnly must be a boolean');
   if (typeof languageOnly !== 'boolean') throw new TypeError('languageOnly must be a boolean');
+  if (typeof p2p !== 'boolean') throw new TypeError('p2p must be a boolean');
   // Keep the configured order of quality: 4K first.
-  return { tiers: TIERS.filter((t) => tiers.includes(t)), ptSlots, originalSlots, excludeServices, cachedOnly, languageOnly };
+  return { tiers: TIERS.filter((t) => tiers.includes(t)), ptSlots, originalSlots, excludeServices, cachedOnly, languageOnly, p2p };
 }
 const expression = (name, body) => ({ expression: `/*${MARK}: ${name}*/ ${body}`, enabled: true });
 
@@ -122,7 +123,7 @@ export function applyNextPolicy(config, { anime, language: languageId = DEFAULT_
   if (!config || typeof config !== 'object' || Array.isArray(config)) throw new TypeError('config must be an object');
   if (typeof anime !== 'boolean') throw new TypeError('anime must be a boolean');
   const language = getLanguage(languageId);
-  const { tiers: TIERS, ptSlots: PT_SLOTS, originalSlots: ORIGINAL_SLOTS, excludeServices, cachedOnly, languageOnly } = resolveOptions(options);
+  const { tiers: TIERS, ptSlots: PT_SLOTS, originalSlots: ORIGINAL_SLOTS, excludeServices, cachedOnly, languageOnly, p2p } = resolveOptions(options);
   const { mine: pt, originalGroup, labels, compatibility } = selectors(language);
   const tag = language.tag;
   const PER_RESOLUTION = PT_SLOTS + ORIGINAL_SLOTS;
@@ -170,13 +171,13 @@ export function applyNextPolicy(config, { anime, language: languageId = DEFAULT_
     const good = `negate(${bad}, ${set})`;
     return `negate(slice(merge(resolution(${good}, '${tier}'), resolution(negate(${good}, ${set}), '${tier}')), 0, ${count}), resolution(${set}, '${tier}'))`;
   };
-  const cachedPt = `cached(${pt})`;
-  const cachedOriginal = `cached(${originalGroup})`;
+  const cachedPt = p2p ? pt : `cached(${pt})`;
+  const cachedOriginal = p2p ? originalGroup : `cached(${originalGroup})`;
   const pendingPt = `slice(uncached(${pt}), 0, 1)`;
   const noCachedPt = `count(${cachedPt}) == 0`;
-  next.excludedStreamExpressions.push(expression(`reserva ${tag} não cacheado`,
+  if (!p2p) next.excludedStreamExpressions.push(expression(`reserva ${tag} não cacheado`,
     `${noCachedPt} ? pin(passthrough(${pendingPt}, 'limit'), 'bottom') : []`));
-  if (cachedOnly) {
+  if (cachedOnly && !p2p) {
     next.excludedStreamExpressions.push(expression('só cacheados',
       `count(cached(streams)) > 0 ? negate(${noCachedPt} ? ${pendingPt} : [], uncached(streams)) : []`));
   }
@@ -220,6 +221,10 @@ export function applyNextPolicy(config, { anime, language: languageId = DEFAULT_
   ];
   next.sortCriteria.global = compactWithinResolution(next.sortCriteria.global);
   next.sortCriteria.global = firstCriteria(next.sortCriteria.global, { key: 'cached', direction: 'desc' });
+  if (p2p) {
+    next.sortCriteria.global = next.sortCriteria.global.filter((item) => !['cached', 'seeders'].includes(item.key));
+    next.sortCriteria.global.splice(2, 0, { key: 'seeders', direction: 'desc' });
+  }
   for (const group of ['cached', 'uncached']) {
     next.sortCriteria[group] = compactWithinResolution(next.sortCriteria[group]);
   }

@@ -32,6 +32,12 @@ npm run e2e
 
 The Stremio API is mocked in the browser tests; they never touch a real account.
 
+For the optional-debrid flow, run `node tests/e2e/no-debrid.e2e.mjs` against the preview site (`E2E_SITE` overrides the URL). It checks the last-service warning, cancel/confirm, installation without credentials, and adding a service again. `PLAYWRIGHT_MODULE` can point to an existing `playwright-core/index.mjs` without installing a dependency.
+
+`node tests/e2e/no-debrid-instance.e2e.mjs` checks filtering through a **disposable** local AIOStreams, using synthetic torrent metadata and no media downloads. Start the container above with `ALLOW_PRIVATE_URLS=true` for this test only; the fixture binds to the Docker bridge (`E2E_FIXTURE_HOST`, default `172.17.0.1`). `E2E_AIO` defaults to `http://127.0.0.1:18391`. Add `--live` to also check movie and series searches through the real sources. These checks establish profile creation and stream results, not video playback; discard the test container afterward.
+
+See the [optional-debrid validation report](./docs/no-debrid-validation.md) for the compatibility matrix, live source results and partial video/audio playback probes. Set `E2E_AIO` for `no-debrid.e2e.mjs` to check browser installation against a real AIOStreams too.
+
 ## Adding a language
 
 See [docs/languages.md](docs/languages.md#adding-a-language). Before opening a pull request, create the profile on a local AIOStreams and check a few real titles.

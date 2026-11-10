@@ -192,6 +192,16 @@ test('sorts cached first, then resolution, then PT-BR before original, then best
   assert.match(result.preferredStreamExpressions[1].expression, /originalLanguage/);
 });
 
+test('P2P uses seeds within each language/quality and limits candidates without reserving a debrid download', () => {
+  const once = applyNextPolicy(base(), { anime: false, p2p: true });
+  assert.deepEqual(applyNextPolicy(once, { anime: false, p2p: true }), once);
+  const expressions = once.excludedStreamExpressions.map((r) => r.expression).join('\n');
+  assert.doesNotMatch(expressions, /cached\(|passthrough\(/);
+  assert.match(expressions, /faixa 1080p PT-BR/);
+  assert.deepEqual(once.sortCriteria.global.slice(0, 3).map((c) => c.key), ['resolution', 'streamExpressionMatched', 'seeders']);
+  assert.throws(() => applyNextPolicy(base(), { anime: false, p2p: 'yes' }), /p2p/);
+});
+
 test('audio labels: Dual / PT-BR / original as zero-score ranked expressions plus one description prefix, once', () => {
   for (const anime of [false, true]) {
     const twice = applyNextPolicy(applyNextPolicy(base(), { anime }), { anime });
