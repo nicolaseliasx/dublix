@@ -33,13 +33,33 @@ Stremio with a debrid service shows dozens of near-identical results, and findin
 
 ## How it works
 
+**Setup, once.** Your browser does the work; the profile passes through `/api/aio` a single time.
+
+```mermaid
+sequenceDiagram
+    participant B as Your browser
+    participant P as Dublix /api/aio
+    participant A as Public AIOStreams
+    participant S as Stremio API
+    B->>P: profile for your language and debrid
+    P->>A: create the profile
+    A-->>B: your addon address
+    B->>S: add Dublix to your addon list (AuthKey)
 ```
-your browser ──(AuthKey)──────────────▶ Stremio API      reads/updates your addon list
-     │
-     └──(config, once)──▶ /api/aio ──▶ public AIOStreams  creates your profile (CORS bridge, no storage)
-                                              │
-Stremio on your TV ──── search ─────────────▶ │ ── sources (Torrentio, Zilean, MediaFusion, Comet, StremThru)
-                   ◀─── HTTPS link ────────── debrid service ──▶ video plays from your debrid account
+
+**Every time you watch.** Dublix is out of the way; video never passes through it.
+
+```mermaid
+sequenceDiagram
+    participant T as Stremio on your TV
+    participant A as AIOStreams
+    participant R as Sources
+    participant D as Your debrid service
+    T->>A: what is available for this title?
+    A->>R: search Torrentio, Zilean, MediaFusion, Comet, StremThru
+    A-->>T: short list, your language first
+    T->>D: play the option you picked
+    D-->>T: video, straight from your debrid account
 ```
 
 The setup page is static. Its only server-side parts are two small Cloudflare Pages Functions: `/api/aio`, which passes the profile to an allow-listed public instance once (those instances send no CORS headers), and `/subs/*`, the stateless subtitles addon. Nothing is logged or stored.
