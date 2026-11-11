@@ -7,6 +7,10 @@ const AIO = process.env.E2E_AIO;
 const browser = await chromium.launch({ executablePath: process.env.CHROMIUM ?? '/usr/bin/chromium', args: ['--no-sandbox'] });
 try {
   const page = await browser.newPage({ acceptDownloads: true });
+  if (process.env.E2E_STALE_CSS) {
+    const { readFileSync } = await import('node:fs');
+    await page.route('**/styles.css', (route) => route.fulfill({ contentType: 'text/css', body: readFileSync(process.env.E2E_STALE_CSS) }));
+  }
   const errors = [];
   page.on('pageerror', (e) => errors.push(e.message));
   let collection = [];
@@ -36,12 +40,15 @@ try {
   await page.goto(SITE);
   assert.equal(await page.locator('.service-row select').inputValue(), 'torbox', 'TorBox stays selected by default');
   assert.equal(await page.locator('#s2 .optional').textContent(), 'optional');
-  assert.equal(await page.locator('.debrid-advice').count(), 1, 'the recommendation has its own visual callout');
+  assert.equal(await page.locator('section[aria-labelledby="s2"] svg').count(), 0, 'the debrid section has no decorative icon');
+  assert.equal(await page.locator('#debrid-recommendation.hint').count(), 1, 'recommendation uses the standard hint style');
   assert.match(await page.textContent('#debrid-advice-title'), /every play is a gamble/i);
-  assert.equal(await page.isVisible('.debrid-advice'), true, 'recommendation is visible before removing the service');
+  assert.equal(await page.isVisible('#debrid-recommendation'), true, 'recommendation is visible before removing the service');
+  assert.ok((await page.locator('section[aria-labelledby="s2"]').boundingBox()).height < 500, 'desktop section stays compact');
   if (process.env.E2E_OUT) await page.locator('section[aria-labelledby="s2"]').screenshot({ path: `${process.env.E2E_OUT}debrid-desktop.png` });
   await page.setViewportSize({ width: 375, height: 812 });
   assert.ok(await page.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), 'no horizontal overflow on mobile');
+  assert.ok((await page.locator('section[aria-labelledby="s2"]').boundingBox()).height < 650, 'mobile section stays compact');
   if (process.env.E2E_OUT) await page.locator('section[aria-labelledby="s2"]').screenshot({ path: `${process.env.E2E_OUT}debrid-mobile.png` });
   await page.setViewportSize({ width: 1280, height: 900 });
   await page.fill('#authkey', 'TEST');

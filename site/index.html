@@ -51,14 +51,8 @@
         <h2 id="s2"><span class="step">2</span>Debrid service <span class="optional">optional</span></h2>
         <div id="services"></div>
         <button type="button" class="ghost" id="add-service">+ Add another service</button>
-        <aside class="debrid-advice" aria-labelledby="debrid-advice-title">
-          <svg class="debrid-advice-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 2-9 12h7l-1 8 10-12h-7l1-8Z"/></svg>
-          <div>
-            <span class="debrid-advice-label">Strongly recommended</span>
-            <p class="debrid-advice-title" id="debrid-advice-title">Without debrid, every play is a gamble.</p>
-            <p class="debrid-advice-copy">Longer waits. More buffering. Fewer working streams. Keep a debrid service for a faster, more reliable experience.</p>
-          </div>
-        </aside>
+        <p class="hint" id="debrid-recommendation"><strong>Strongly recommended.</strong> Keep a debrid service for faster, more reliable playback.</p>
+        <p class="warn" id="debrid-advice-title">Without debrid, every play is a gamble: longer waits, more buffering and fewer working streams.</p>
         <p class="hint">Remove the service with × to continue without debrid. <a href="#faq-debrid">What is a debrid service?</a></p>
         <p class="warn" id="no-debrid-warn" role="status" hidden>Without debrid, playback depends on torrent seeds and may be slow, buffer or fail. Use a Stremio player with P2P support. Your IP is visible to peers.</p>
       </section>
