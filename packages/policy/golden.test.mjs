@@ -4,7 +4,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { applyNextPolicy } from './policy.mjs';
-import { buildFilmhubConfig } from './config.mjs';
+import { buildDublixConfig } from './config.mjs';
 import { applyNextPolicy as frozenApply } from './golden/policy.v1.mjs';
 import { buildFilmhubConfig as frozenBuild } from './golden/config.v1.mjs';
 
@@ -21,12 +21,15 @@ const OPTION_SETS = {
   'TMDB key': { services: torbox, tmdbApiKey: 'tmdb-fake', anime: true },
   'two services': { services: both, tiers: ['2160p', '720p'], ptSlots: 3, originalSlots: 1 },
 };
-const text = (value) => JSON.stringify(value, null, 1);
+// One deliberate change since the freeze: the formatter hides the internal audio marks from the matched-rule line (policy.test.mjs
+// covers it). They are stripped here so every other byte is still compared with the frozen modules.
+const HIDDEN = ['Dual', 'PT-BR', 'original'].map((x) => `'Filmhub Next T4: áudio ${x}',`).join('');
+const text = (value) => JSON.stringify(value, null, 1).split(HIDDEN).join('');
 
 for (const [name, options] of Object.entries(OPTION_SETS)) {
-  test(`golden pt-BR: buildFilmhubConfig(${name}) is unchanged`, () => {
-    assert.equal(text(buildFilmhubConfig(base, options)), text(frozenBuild(base, options)));
-    assert.equal(text(buildFilmhubConfig(base, { ...options, language: 'pt-BR' })), text(frozenBuild(base, options)), 'explicit pt-BR equals the default');
+  test(`golden pt-BR: buildDublixConfig(${name}) is unchanged`, () => {
+    assert.equal(text(buildDublixConfig(base, options)), text(frozenBuild(base, options)));
+    assert.equal(text(buildDublixConfig(base, { ...options, language: 'pt-BR' })), text(frozenBuild(base, options)), 'explicit pt-BR equals the default');
   });
 }
 

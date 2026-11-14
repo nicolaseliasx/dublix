@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { sanitizeBase, buildFilmhubConfig, findSecrets, DEBRID } from './config.mjs';
+import { sanitizeBase, buildDublixConfig, findSecrets, DEBRID } from './config.mjs';
 
 const uuid = '12345678-1234-4123-8123-123456789abc';
 const owner = () => ({
@@ -70,8 +70,8 @@ test('findSecrets flags credential fields and long tokens anywhere', () => {
 
 const opts = (o = {}) => ({ services: [{ id: 'realdebrid', credentials: { apiKey: 'rd-key' } }], ...o });
 
-test('buildFilmhubConfig fills the chosen debrid services everywhere the base marks them', () => {
-  const cfg = buildFilmhubConfig(sanitizeBase(owner()), opts({
+test('buildDublixConfig fills the chosen debrid services everywhere the base marks them', () => {
+  const cfg = buildDublixConfig(sanitizeBase(owner()), opts({
     services: [{ id: 'realdebrid', credentials: { apiKey: 'rd' } }, { id: 'easynews', credentials: { username: 'u', password: 'p' } }],
   }));
   assert.deepEqual(cfg.services.map((s) => [s.id, s.enabled]), [['realdebrid', true], ['easynews', true]]);
@@ -82,30 +82,30 @@ test('buildFilmhubConfig fills the chosen debrid services everywhere the base ma
   assert.doesNotMatch(JSON.stringify(cfg), new RegExp(DEBRID.replace(/[$]/g, '\\$')));
 });
 
-test('buildFilmhubConfig applies the Filmhub policy without excluding any chosen service', () => {
-  const cfg = buildFilmhubConfig(sanitizeBase(owner()), opts({ tiers: ['1080p'], ptSlots: 1, originalSlots: 1 }));
+test('buildDublixConfig applies the Dublix policy without excluding any chosen service', () => {
+  const cfg = buildDublixConfig(sanitizeBase(owner()), opts({ tiers: ['1080p'], ptSlots: 1, originalSlots: 1 }));
   assert.equal(cfg.resultLimits.global, 2);
   const exprs = cfg.excludedStreamExpressions.map((e) => e.expression).join('\n');
   assert.doesNotMatch(exprs, /service\(streams/);
   assert.match(exprs, /faixa 1080p PT-BR/);
 });
 
-test('buildFilmhubConfig disables the library when no debrid cloud is chosen, and sets TMDB only when given', () => {
-  const only = buildFilmhubConfig(sanitizeBase(owner()), opts({ services: [{ id: 'easynews', credentials: { username: 'u', password: 'p' } }] }));
+test('buildDublixConfig disables the library when no debrid cloud is chosen, and sets TMDB only when given', () => {
+  const only = buildDublixConfig(sanitizeBase(owner()), opts({ services: [{ id: 'easynews', credentials: { username: 'u', password: 'p' } }] }));
   assert.equal(only.presets.find((p) => p.type === 'library').enabled, false);
   assert.equal(only.tmdbApiKey, '');
-  assert.equal(buildFilmhubConfig(sanitizeBase(owner()), opts({ tmdbApiKey: ' abc ' })).tmdbApiKey, 'abc');
+  assert.equal(buildDublixConfig(sanitizeBase(owner()), opts({ tmdbApiKey: ' abc ' })).tmdbApiKey, 'abc');
 });
 
 test('without a TMDB key the TMDB-only features are switched off (instances reject them otherwise)', () => {
   const withMatching = { ...sanitizeBase(owner()), titleMatching: { enabled: true, addons: [] }, yearMatching: { enabled: true },
     digitalReleaseFilter: { enabled: true }, bitrate: { useMetadataRuntime: true, other: 1 } };
-  const off = buildFilmhubConfig(withMatching, opts());
+  const off = buildDublixConfig(withMatching, opts());
   assert.deepEqual(off.bitrate, { useMetadataRuntime: false, other: 1 });
   assert.equal(off.titleMatching.enabled, false);
   assert.equal(off.yearMatching.enabled, false);
   assert.equal(off.digitalReleaseFilter.enabled, false);
-  const on = buildFilmhubConfig(withMatching, opts({ tmdbApiKey: 'k' }));
+  const on = buildDublixConfig(withMatching, opts({ tmdbApiKey: 'k' }));
   assert.equal(on.titleMatching.enabled, true);
   assert.equal(on.yearMatching.enabled, true);
   assert.equal(on.digitalReleaseFilter.enabled, true);
@@ -114,7 +114,7 @@ test('without a TMDB key the TMDB-only features are switched off (instances reje
 test('no debrid: enables P2P, disables wrapping and cloud library, and keeps language limits without cache-only rules', () => {
   const input = { ...sanitizeBase(owner()), excludedStreamTypes: ['p2p', 'http', 'live'] };
   const before = structuredClone(input);
-  const cfg = buildFilmhubConfig(input, { services: [], tiers: ['1080p'], ptSlots: 2, originalSlots: 1 });
+  const cfg = buildDublixConfig(input, { services: [], tiers: ['1080p'], ptSlots: 2, originalSlots: 1 });
   assert.deepEqual(input, before);
   assert.deepEqual(cfg.services, []);
   assert.deepEqual(cfg.excludedStreamTypes, ['http', 'live']);
@@ -134,15 +134,15 @@ test('no debrid: enables P2P, disables wrapping and cloud library, and keeps lan
   assert.deepEqual(cfg.sortCriteria.global.slice(0, 3).map((c) => c.key), ['resolution', 'streamExpressionMatched', 'seeders']);
 });
 
-test('buildFilmhubConfig rejects missing or malformed credentials and unknown services', () => {
+test('buildDublixConfig rejects missing or malformed credentials and unknown services', () => {
   const base = sanitizeBase(owner());
   for (const services of [undefined, null, {}, [{ id: 'nope', credentials: { apiKey: 'k' } }], [{ id: 'torbox', credentials: {} }],
     [{ id: 'torbox', credentials: { apiKey: '  ' } }], [{ id: 'easynews', credentials: { apiKey: 'k' } }],
     [{ id: 'torbox', credentials: { apiKey: 'a' } }, { id: 'torbox', credentials: { apiKey: 'b' } }]]) {
-    assert.throws(() => buildFilmhubConfig(base, { services }), TypeError, JSON.stringify(services));
+    assert.throws(() => buildDublixConfig(base, { services }), TypeError, JSON.stringify(services));
   }
 });
 
-test('buildFilmhubConfig refuses a base that still carries secrets', () => {
-  assert.throws(() => buildFilmhubConfig(owner(), opts()), /secrets/);
+test('buildDublixConfig refuses a base that still carries secrets', () => {
+  assert.throws(() => buildDublixConfig(owner(), opts()), /secrets/);
 });

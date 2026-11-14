@@ -98,7 +98,7 @@ test('run prints help, masks credentials and exits 0 or 1', async () => {
   assert.match(HELP, /DUBLIX_BASE_URL/);
   assert.match(HELP, /DUBLIX_MANIFEST_URL/);
   const { fetcher } = fakeGateway();
-  const env = { DUBLIX_MANIFEST_URL: `http://gw.test${MANIFEST_PATH}`, FILMHUB_SITE_ORIGIN: SITE };
+  const env = { DUBLIX_MANIFEST_URL: `http://gw.test${MANIFEST_PATH}`, DUBLIX_SITE_ORIGIN: SITE };
   assert.equal(await run([], env, { ...io, fetcher }), 0);
   assert.equal(/SECRETPASS|uuid1/.test(out.join('\n') + err.join('\n')), false);
   const leaky = fakeGateway({ leak: ['/'] });

@@ -1,11 +1,11 @@
 # Dublix self-host kit: AIOStreams with the Dublix patches, smart subtitles and a small gateway.
 # Usage: cp .env.example .env && edit it, then: docker compose up -d --build
-name: filmhub
+name: dublix
 services:
   aiostreams:
     # AIOStreams v2.37.0 (pinned) + Brazilian episode names, stream-title repair and localized library titles (compat/).
     build: ./compat
-    image: filmhub-aiostreams:2.37.0-filmhub-1
+    image: dublix-aiostreams:2.37.0-dublix-1
     restart: unless-stopped
     init: true
     env_file: .env
@@ -42,9 +42,9 @@ services:
     image: nginx:1.29-alpine@sha256:5616878291a2eed594aee8db4dade5878cf7edcb475e59193904b198d9b830de
     restart: unless-stopped
     environment:
-      FILMHUB_SITE_ORIGIN: ${FILMHUB_SITE_ORIGIN:-https://dublix.stremio.ncls.cc}
+      DUBLIX_SITE_ORIGIN: ${DUBLIX_SITE_ORIGIN:-https://dublix.stremio.ncls.cc}
     ports:
-      - "${FILMHUB_BIND:-127.0.0.1}:${FILMHUB_PORT:-8080}:8080"
+      - "${DUBLIX_BIND:-127.0.0.1}:${DUBLIX_PORT:-8080}:8080"
     volumes:
       - ./gateway/default.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./gateway/proxy.inc:/etc/nginx/conf.d/proxy.inc:ro

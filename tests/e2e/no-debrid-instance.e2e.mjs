@@ -4,7 +4,7 @@ import assert from 'node:assert/strict';
 import { createServer } from 'node:http';
 import { readFileSync } from 'node:fs';
 import { once } from 'node:events';
-import { buildFilmhubConfig } from '../../packages/policy/config.mjs';
+import { buildDublixConfig } from '../../packages/policy/config.mjs';
 
 const AIO = process.env.E2E_AIO ?? 'http://127.0.0.1:18391';
 const host = process.env.E2E_FIXTURE_HOST ?? '172.17.0.1';
@@ -49,7 +49,7 @@ async function query(profile, type, id) {
   return (data.streams ?? []).filter((s) => s.infoHash);
 }
 try {
-  const config = buildFilmhubConfig(base, options);
+  const config = buildDublixConfig(base, options);
   config.presets = [{ type: 'custom', instanceId: 'p2p-fixture', enabled: true, options: {
     name: 'P2P Fixture', manifestUrl: `http://${host}:${fixture.address().port}/manifest.json`, timeout: 5000,
   } }];
@@ -66,7 +66,7 @@ try {
   assert.ok(dubbed.every((s) => streams.find((f) => f.infoHash === s.infoHash).behaviorHints.filename.includes('PT-BR')));
   console.log('ok: only-my-language keeps 2 PT-BR torrents per tier');
   if (process.argv.includes('--live')) {
-    const liveProfile = await create(buildFilmhubConfig(base, { services: [] }));
+    const liveProfile = await create(buildDublixConfig(base, { services: [] }));
     for (const [type, id] of [['movie', 'tt0133093'], ['series', 'tt0460681:4:1']]) {
       const start = Date.now();
       const live = await query(liveProfile, type, id);
@@ -80,7 +80,7 @@ try {
 }
 
 function buildFixtureConfig(opts) {
-  const config = buildFilmhubConfig(base, opts);
+  const config = buildDublixConfig(base, opts);
   config.presets = [{ type: 'custom', instanceId: 'p2p-fixture', enabled: true, options: {
     name: 'P2P Fixture', manifestUrl: `http://${host}:${fixture.address().port}/manifest.json`, timeout: 5000,
   } }];

@@ -33,13 +33,13 @@ Then open the Dublix setup site, choose **My own server**, enter your `BASE_URL`
 
 ## Exposure
 
-The gateway (port `FILMHUB_PORT`, default 8080) serves:
+The gateway (port `DUBLIX_PORT`, default 8080) serves:
 
 | Path | Purpose |
 | --- | --- |
 | `/stremio/*` (except `/stremio/configure`) | Your Dublix addon for Stremio |
 | `/api/v1/debrid/*`, `/static/*` | Playback redirects to your debrid service |
-| `POST /api/v1/user`, `GET /api/v1/status` | Profile creation from the setup site (CORS for `FILMHUB_SITE_ORIGIN` only) |
+| `POST /api/v1/user`, `GET /api/v1/status` | Profile creation from the setup site (CORS for `DUBLIX_SITE_ORIGIN` only) |
 | `/subs/*` | Dublix Subs (all languages) |
 
 Everything else answers 404, including the AIOStreams configure pages.
@@ -58,3 +58,5 @@ Do not put the hostname behind a login page (such as Cloudflare Access): Stremio
 - After editing `gateway/`, recreate it: `docker compose up -d --force-recreate gateway` (a reload keeps the old file).
 - The patches check the hash of the AIOStreams files they modify and fail the build if upstream changed; a new AIOStreams version needs a reviewed kit release.
 - Run the patch tests with `node --test compat/test/` from this folder.
+- The addon ids, preset ids and rule markers still carry the project's earlier name `filmhub` on purpose, because they are stored in installed addons and existing profiles.
+- Upgrading a kit installed under the old names: the Compose project is now `dublix`, so the data volume is `dublix_aiostreams-data` and the old `filmhub_aiostreams-data` is not reused. Copy it across before the first `up` (or keep the old project name with `COMPOSE_PROJECT_NAME=filmhub`), and rename `FILMHUB_SITE_ORIGIN`, `FILMHUB_BIND` and `FILMHUB_PORT` to `DUBLIX_*` in `.env`.

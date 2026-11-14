@@ -252,3 +252,24 @@ test('desenhos (gênero Animation) seguem a regra de idioma do anime mesmo sem a
     assert.match(rule.expression, /isAnime or 'Animation' in genres/);
   }
 });
+
+test('the internal audio marks never show in the list: the formatter drops them from the matched-rule line', async () => {
+  const { readFileSync } = await import('node:fs');
+  const base = JSON.parse(readFileSync(new URL('./base-config.json', import.meta.url), 'utf8'));
+  for (const [language, own, other] of [['pt-BR', 'PT-BR', 'idioma'], ['es-419', 'idioma', 'PT-BR']]) {
+    const once = applyNextPolicy(base, { anime: false, language });
+    const description = once.formatter.definitions.custom.description;
+    const lists = description.match(/stream\.rseMatched::remove\([^)]*\)/g);
+    assert.ok(lists?.length >= 1, 'the template prints matched rule names');
+    for (const list of lists) {
+      for (const mark of ['Filmhub Next T4: áudio Dual', `Filmhub Next T4: áudio ${own}`, 'Filmhub Next T4: áudio original']) {
+        assert.equal(list.split(`'${mark}'`).length - 1, 1, `${mark} removed exactly once`);
+      }
+      assert.equal(list.includes(`áudio ${other}`), false, 'only the marks this language uses');
+      assert.ok(list.includes("'TrueHD ATMOS'"), 'the template own removals stay');
+    }
+    assert.deepEqual(applyNextPolicy(once, { anime: false, language }), once, 'idempotent');
+    const switched = applyNextPolicy(applyNextPolicy(once, { anime: false, language: language === 'pt-BR' ? 'fr' : 'pt-BR' }), { anime: false, language });
+    assert.equal(switched.formatter.definitions.custom.description, description, 'switching language and back leaves no stale mark');
+  }
+});

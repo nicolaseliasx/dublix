@@ -18,7 +18,7 @@ npm test          # unit tests: policy, languages, golden pt-BR, profile builder
 Browser tests need `playwright-core`, Chromium, and a local AIOStreams on port 18391 (public-instance flow) or the kit on port 18395 (own-server flow):
 
 ```sh
-docker run -d --rm --name filmhub-validate -p 127.0.0.1:18391:3000 \
+docker run -d --rm --name dublix-validate -p 127.0.0.1:18391:3000 \
   -e SECRET_KEY=$(openssl rand -hex 32) -e BASE_URL=http://127.0.0.1:18391 \
   -e ALLOW_PRIVATE_URLS=false -e USER_CREATE_RATE_LIMIT_MAX_REQUESTS=100 \
   -e REGEX_FILTER_ACCESS=trusted -e SEL_SYNC_ACCESS=trusted \

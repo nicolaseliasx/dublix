@@ -109,6 +109,8 @@ npm run dev    # build and serve the site with its functions on http://127.0.0.1
 
 Browser tests, deployment and updating the base profile are described in [CONTRIBUTING.md](CONTRIBUTING.md). Security notes and how to report a problem are in [SECURITY.md](SECURITY.md).
 
+The addon ids, preset ids and rule markers still carry the project's earlier name `filmhub` on purpose, because they are stored in installed addons and existing profiles.
+
 ## Acknowledgements
 
 Dublix is a thin layer over the work of many people. Thank you to:

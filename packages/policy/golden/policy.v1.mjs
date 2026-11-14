@@ -1,5 +1,5 @@
 // FROZEN copy of the pre-language-profile module, kept only so golden.test.mjs can prove the pt-BR output never changes. Do not edit.
-// Filmhub T4 policy for an already resolved AIOStreams/Tamtaro configuration.
+// Dublix T4 policy for an already resolved AIOStreams/Tamtaro configuration.
 // Pure transformation: no profile access, network calls, downloads, or credential writes.
 // SEL reference: https://github.com/Viren070/AIOStreams/blob/main/packages/docs/content/docs/reference/stream-expressions.mdx
 // Schema: https://github.com/Viren070/AIOStreams/blob/main/packages/core/src/db/schemas.ts

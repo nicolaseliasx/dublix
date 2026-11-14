@@ -16,7 +16,7 @@ All three print `--help`, exit 0 when everything passes and 1 otherwise.
 | --- | --- | --- |
 | `DUBLIX_MANIFEST_URL` | all (optional for `verify-gateway`) | Your addon manifest address, `https://<host>/stremio/<id>/<password>/manifest.json`. It contains credentials: prefer the variable over `--manifest`, which shows up in the process list. |
 | `DUBLIX_BASE_URL` | `verify-gateway` | Gateway to test. Default: the manifest's host, else `http://127.0.0.1:8080` (the kit default). |
-| `FILMHUB_SITE_ORIGIN` | `verify-gateway` | The setup site origin allowed to create profiles. Default: the kit's default. |
+| `DUBLIX_SITE_ORIGIN` | `verify-gateway` | The setup site origin allowed to create profiles. Default: the kit's default. |
 
 ```sh
 export DUBLIX_MANIFEST_URL='https://dublix.example.com/stremio/<id>/<password>/manifest.json'
@@ -27,7 +27,7 @@ node tools/benchmark.mjs --output baseline.json
 
 ## `verify-gateway.mjs`
 
-Asserts the behaviour of `kit/gateway/default.conf.template`: `/` and the AIOStreams configure pages answer 404, the internal search API is hidden, `/api/v1/status` answers, the profile API allows only `FILMHUB_SITE_ORIGIN` (CORS preflight) and rejects GET, the playback and static routes reach AIOStreams, Dublix Subs serves its manifests (read from `packages/subs`) and gives a dubbed file no subtitles, and the subs and status routes refuse writes. With a manifest it also checks the manifest and one stream list.
+Asserts the behaviour of `kit/gateway/default.conf.template`: `/` and the AIOStreams configure pages answer 404, the internal search API is hidden, `/api/v1/status` answers, the profile API allows only `DUBLIX_SITE_ORIGIN` (CORS preflight) and rejects GET, the playback and static routes reach AIOStreams, Dublix Subs serves its manifests (read from `packages/subs`) and gives a dubbed file no subtitles, and the subs and status routes refuse writes. With a manifest it also checks the manifest and one stream list.
 
 It tells "blocked by the gateway" from "404 from AIOStreams" by the default nginx error page, so it assumes the stock gateway. The profile rate limit is not tested.
 

@@ -27,12 +27,12 @@ Input (environment or flags):
   DUBLIX_BASE_URL        Gateway address to test (default: the host of the manifest URL, else ${DEFAULT_BASE}).
   DUBLIX_MANIFEST_URL    Your addon manifest address (optional). With it, the manifest and a stream list are checked too; without
                          it those checks are skipped. It contains credentials: prefer the variable over --manifest.
-  FILMHUB_SITE_ORIGIN    The setup site origin allowed to create profiles (default ${DEFAULT_SITE_ORIGIN}, the kit's default).
+  DUBLIX_SITE_ORIGIN    The setup site origin allowed to create profiles (default ${DEFAULT_SITE_ORIGIN}, the kit's default).
 
 Options:
   --base <url>           Same as DUBLIX_BASE_URL.
   --manifest <url>       Same as DUBLIX_MANIFEST_URL.
-  --site-origin <url>    Same as FILMHUB_SITE_ORIGIN.
+  --site-origin <url>    Same as DUBLIX_SITE_ORIGIN.
   --timeout <seconds>    Per-request timeout (default 30).
   -h, --help             Show this help.
 
@@ -118,7 +118,7 @@ export async function run(argv, env = process.env, { stdout = console.log, stder
     const manifest = rawManifest ? parseManifestUrl(rawManifest) : null;
     const base = o.base ?? env.DUBLIX_BASE_URL ?? manifest?.origin ?? DEFAULT_BASE;
     if (!/^https?:\/\/[^/]+\/?$/.test(base)) throw new Error('Base URL must look like http(s)://host[:port].');
-    const siteOrigin = o['site-origin'] ?? env.FILMHUB_SITE_ORIGIN ?? DEFAULT_SITE_ORIGIN;
+    const siteOrigin = o['site-origin'] ?? env.DUBLIX_SITE_ORIGIN ?? DEFAULT_SITE_ORIGIN;
     const timeout = o.timeout === undefined ? 30 : Number(o.timeout);
     if (!(timeout > 0)) throw new Error('--timeout must be a positive number.');
     stdout(`Gateway: ${base.replace(/\/$/, '')}${manifest ? '' : `  (no manifest given: manifest checks skipped; ${MANIFEST_HINT})`}`);

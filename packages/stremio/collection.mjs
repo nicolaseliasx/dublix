@@ -7,11 +7,11 @@ const CINEMETA_ID = 'com.linvo.cinemeta';
 const valid = (a) => a && typeof a.transportUrl === 'string' && a.manifest && typeof a.manifest.id === 'string';
 // The product was called Filmhub before Dublix: installs under the old name are still recognised (and replaced in place).
 const STREAMS_NAMES = ['Dublix', 'Filmhub'];
-export const isFilmhubStreams = (a) => valid(a) && STREAMS_NAMES.includes(a.manifest.name) && /\/stremio\/[^/]+\/[^/]+\/manifest\.json$/.test(a.transportUrl);
+export const isDublixStreams = (a) => valid(a) && STREAMS_NAMES.includes(a.manifest.name) && /\/stremio\/[^/]+\/[^/]+\/manifest\.json$/.test(a.transportUrl);
 // Dublix Subs has one addon per language: `filmhub.subs` (pt-BR) and `filmhub.subs.<language id>`.
 const SUBS_VARIANT = /^filmhub\.subs(\.[A-Za-z0-9-]+)?$/;
 // `cc.ncls.filmhub.subs` was the id of the pre-release subtitles addon.
-export const isFilmhubSubs = (a) => valid(a) && (SUBS_VARIANT.test(a.manifest.id) || a.manifest.id === 'cc.ncls.filmhub.subs');
+export const isDublixSubs = (a) => valid(a) && (SUBS_VARIANT.test(a.manifest.id) || a.manifest.id === 'cc.ncls.filmhub.subs');
 
 /**
  * @param current addons from addonCollectionGet
@@ -27,12 +27,12 @@ export function mergeCollection(current, { streams, subs = null, replaceOpenSubt
   let subsPlaced = false;
   for (const addon of current) {
     // Every entry dropped here is reported, so the review shows all removals (duplicates included).
-    if (isFilmhubStreams(addon)) {
+    if (isDublixStreams(addon)) {
       if (!streamsPlaced) { addons.push(streams); changes.push({ action: 'replace', name: 'Dublix' }); streamsPlaced = true; }
       else changes.push({ action: 'remove', name: 'Dublix' });
       continue;
     }
-    if (isFilmhubSubs(addon)) {
+    if (isDublixSubs(addon)) {
       const name = addon.manifest.name ?? addon.manifest.id;
       if (subs && !subsPlaced) {
         addons.push(subs);

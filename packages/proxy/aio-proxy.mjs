@@ -12,7 +12,7 @@ const TIMEOUT = 20000;
 const json = (status, body) => new Response(JSON.stringify(body), {
   status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'no-store' },
 });
-const fail = (status, message) => json(status, { success: false, error: { code: 'FILMHUB_PROXY', message } });
+const fail = (status, message) => json(status, { success: false, error: { code: 'DUBLIX_PROXY', message } });
 
 export async function handleAio(request, { fetch = globalThis.fetch } = {}) {
   const params = new URL(request.url).searchParams;

@@ -12,7 +12,7 @@ test('injects identity-bound title metadata without replacing strict matching', 
 });
 test('repara o título do stream pelo nome do torrent sem trocar o resto da correspondência', () => {
   const result = patchTitleFilter(source, hash(source));
-  assert.match(result, /import \{ repairedStreamTitle \} from '\/app\/filmhub\/stream-title\.mjs';/);
+  assert.match(result, /import \{ repairedStreamTitle \} from '\/app\/dublix\/stream-title\.mjs';/);
   assert.match(result, /let streamTitle = repairedStreamTitle\(stream, /);
   assert.equal(result.includes('let streamTitle = stream.parsedFile?.title;'), false);
 });

@@ -146,7 +146,7 @@ function validServices(services) {
  * @param o { services: [{id, credentials}], tiers?, ptSlots?, originalSlots?, cachedOnly?, anime?, tmdbApiKey?,
  *   language? (a languages.mjs id, default pt-BR), languageOnly? (only that language, no original-audio options) }
  */
-export function buildFilmhubConfig(base, { services, tmdbApiKey = '', anime = false, language = DEFAULT_LANGUAGE, ...policy } = {}) {
+export function buildDublixConfig(base, { services, tmdbApiKey = '', anime = false, language = DEFAULT_LANGUAGE, ...policy } = {}) {
   if (findSecrets(base).length) throw new Error('base config carries secrets; run sanitizeBase first');
   const chosen = validServices(services);
   const ids = chosen.map((s) => s.id);

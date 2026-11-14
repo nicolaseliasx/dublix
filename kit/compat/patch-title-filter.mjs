@@ -10,11 +10,11 @@ const TITLE_SEAM = 'let streamTitle = stream.parsedFile?.title;';
 export function patchTitleFilter(source, expectedHash = ORIGINAL_HASH) {
   if (createHash('sha256').update(source).digest('hex') !== expectedHash) throw Error('upstream title filter hash changed; review before rebuilding');
   if (source.split(SEAM).length !== 2 || source.split(TITLE_SEAM).length !== 2) throw Error('upstream title filter seam is missing or ambiguous');
-  return "import { localizedTitleMetadata } from '/app/filmhub/library-title-aliases.mjs';\n" +
-    "import { repairedStreamTitle } from '/app/filmhub/stream-title.mjs';\n" +
-    "import FilmhubFileParser from '/app/packages/core/dist/parser/file.js';\n" +
+  return "import { localizedTitleMetadata } from '/app/dublix/library-title-aliases.mjs';\n" +
+    "import { repairedStreamTitle } from '/app/dublix/stream-title.mjs';\n" +
+    "import DublixFileParser from '/app/packages/core/dist/parser/file.js';\n" +
     source.replace(SEAM, 'const requestedMetadata = localizedTitleMetadata(await context.getMetadata(), context.parsedId);')
-      .replace(TITLE_SEAM, 'let streamTitle = repairedStreamTitle(stream, (name) => FilmhubFileParser.parse(name)?.title);');
+      .replace(TITLE_SEAM, 'let streamTitle = repairedStreamTitle(stream, (name) => DublixFileParser.parse(name)?.title);');
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -11,7 +11,7 @@ export function patchLibraryMatching(source, expectedHash = ORIGINAL_HASH) {
     throw new Error('upstream library hash changed; review before rebuilding');
   }
   if (source.split(SEAM).length !== 2) throw new Error('upstream library seam is missing or ambiguous');
-  return "import { libraryTitleAliases } from '/app/filmhub/library-title-aliases.mjs';\n" + source.replace(SEAM,
+  return "import { libraryTitleAliases } from '/app/dublix/library-title-aliases.mjs';\n" + source.replace(SEAM,
     '    const titles = libraryTitleAliases(metadata, parsedId);\n' +
     '    if (titles !== metadata.titles) {\n' +
     '        metadata = { ...metadata, titles };\n' +

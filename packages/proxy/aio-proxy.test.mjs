@@ -30,6 +30,12 @@ test('relays upstream errors (e.g. invalid config) with their status', async () 
   assert.equal((await res.json()).error.code, 'USER_INVALID_CONFIG');
 });
 
+test('errors raised by the proxy itself carry the DUBLIX_PROXY code', async () => {
+  const res = await handleAio(post({ instance: 'evil.example' }, '{"config":{},"password":"x"}'), { fetch: recorder().fetch });
+  assert.equal(res.status, 400);
+  assert.equal((await res.json()).error.code, 'DUBLIX_PROXY');
+});
+
 test('reads instance status with GET', async () => {
   const r = recorder(200, { success: true, data: { version: '2.37.0' } });
   const res = await handleAio(new Request(url({ instance: host, op: 'status' })), { fetch: r.fetch });

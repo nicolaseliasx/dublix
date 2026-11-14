@@ -11,7 +11,7 @@ export function patchTitleParser(source, expectedHash = ORIGINAL_HASH) {
     throw new Error('upstream parser hash changed; review before rebuilding');
   }
   if (source.split(SEAM).length !== 2) throw new Error('upstream parser seam is missing or ambiguous');
-  return "import { normalizePortugueseEpisodes } from '/app/filmhub/portuguese-episodes.mjs';\n" +
+  return "import { normalizePortugueseEpisodes } from '/app/dublix/portuguese-episodes.mjs';\n" +
     source.replace(SEAM, 'const name = stripRepostSuffixes(normalizePortugueseEpisodes(title));');
 }
 

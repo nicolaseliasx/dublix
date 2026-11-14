@@ -1,5 +1,5 @@
 // FROZEN copy of the pre-language-profile module, kept only so golden.test.mjs can prove the pt-BR output never changes. Do not edit.
-// Builds a public Filmhub AIOStreams config: a sanitized base (no credentials, no owner-only rules)
+// Builds a public Dublix AIOStreams config: a sanitized base (no credentials, no owner-only rules)
 // plus the viewer's debrid services and list options. Pure; runs in Node and in the browser.
 import { applyNextPolicy, SERVICE_IDS } from './policy.v1.mjs';
 

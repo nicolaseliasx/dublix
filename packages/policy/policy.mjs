@@ -29,6 +29,13 @@ const labelPrefix = (language) => `{stream.rseMatched::~${DUAL_MARK}["${language
 // The label prefix of any language profile, so switching language never leaves the previous labels behind.
 const ANY_LABEL_PREFIX = /\{stream\.rseMatched::~Filmhub Next T4: áudio (?:Dual|PT-BR|idioma|original)\["[^"\]]*\n"\|\|""\]\}/g;
 
+// The template prints the names of the ranked rules a stream matched; the audio marks are internal ids, not text for the list.
+const ANY_HIDDEN_MARK = /'Filmhub Next T4: áudio (?:Dual|PT-BR|idioma|original)',/g;
+const hideMarks = (description, language) => {
+  const hidden = [DUAL_MARK, languageMark(language), ORIGINAL_MARK].map((mark) => `'${mark}',`).join('');
+  return description.replace(ANY_HIDDEN_MARK, '').replaceAll('stream.rseMatched::remove(', `stream.rseMatched::remove(${hidden}`);
+};
+
 const COMPATIBILITY_MARK = 'Filmhub: enforce device compatibility';
 const original = "originalLanguage ? language(streams, originalLanguage) : []";
 const byResolution = (value) => `merge(resolution(${value}, '2160p'), resolution(${value}, '1440p'), resolution(${value}, '1080p'), ${value})`;
@@ -270,7 +277,7 @@ export function applyNextPolicy(config, { anime, language: languageId = DEFAULT_
   const description = next.formatter?.definitions?.custom?.description;
   if (typeof description === 'string') {
     const originalDescription = LEGACY_PREFIXES.reduce((text, prefix) => text.replace(prefix, ''), description.replace(ANY_LABEL_PREFIX, ''));
-    next.formatter.definitions.custom.description = labelPrefix(language) + originalDescription;
+    next.formatter.definitions.custom.description = labelPrefix(language) + hideMarks(originalDescription, language);
   }
   const ownedRanked = [DUAL_MARK, PTBR_MARK, LANGUAGE_MARK, ORIGINAL_MARK, ...LEGACY_RANKED];
   next.rankedStreamExpressions = [...(next.rankedStreamExpressions ?? []).filter(x => !ownedRanked.some(mark => x?.expression?.includes(mark))), ...labels.map(x => ({ ...x }))];

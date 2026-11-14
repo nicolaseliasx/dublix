@@ -1,6 +1,6 @@
 // Dublix setup page. Everything runs in the browser; only /api/aio (profile creation on a public
 // instance, which sends no CORS headers) goes through this site's Worker.
-import { buildFilmhubConfig } from './lib/policy/config.mjs';
+import { buildDublixConfig } from './lib/policy/config.mjs';
 import { SERVICE_IDS } from './lib/policy/policy.mjs';
 import { DEFAULT_LANGUAGE, getLanguage, languageList } from './lib/policy/languages.mjs';
 import { manifestFor } from './lib/subs/subs.mjs';
@@ -199,7 +199,7 @@ const smartSubs = () => document.querySelector('input[name="subs"]:checked').val
 // ---------- build, create, install ----------
 async function buildConfig() {
   basePromise ??= fetch('lib/policy/base-config.json').then((r) => { if (!r.ok) throw new Error('Could not load the Dublix base configuration.'); return r.json(); });
-  return buildFilmhubConfig(await basePromise, { services: readServices(), tmdbApiKey: $('#tmdb').value, ...readOptions() });
+  return buildDublixConfig(await basePromise, { services: readServices(), tmdbApiKey: $('#tmdb').value, ...readOptions() });
 }
 async function createProfile(config, { base, viaProxy }, onRetry) {
   const password = randomPassword();
@@ -260,7 +260,7 @@ $('#review-btn').addEventListener('click', async () => {
     step(`Connected. Your account has ${state.collection.length} addons.`);
     const placeholder = (name, id) => ({ transportUrl: `https://placeholder/${id}/x/manifest.json`, manifest: { id, name }, flags: {} });
     const { changes } = mergeCollection(state.collection, {
-      streams: placeholder('Dublix', 'filmhub.preview'), subs: smartSubs() ? placeholder(manifestFor(language().id).name, manifestFor(language().id).id) : null,
+      streams: placeholder('Dublix', 'dublix.preview'), subs: smartSubs() ? placeholder(manifestFor(language().id).name, manifestFor(language().id).id) : null,
     });
     renderReview(changes, state.collection);
     $('#install-btn').disabled = false;
