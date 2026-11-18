@@ -3,3 +3,7 @@ COPY portuguese-episodes.mjs patch-title.mjs library-title-aliases.mjs patch-lib
 RUN ["/nodejs/bin/node", "/app/dublix/patch-title.mjs", "--apply"]
 RUN ["/nodejs/bin/node", "/app/dublix/patch-library.mjs", "--apply"]
 RUN ["/nodejs/bin/node", "/app/dublix/patch-title-filter.mjs", "--apply"]
+# The base image has no shell, so /app/data is created by copying a placeholder owned by nonroot (65532).
+# A new named volume mounted there inherits this ownership.
+COPY --chown=65532:65532 data/.gitkeep /app/data/.gitkeep
+USER 65532:65532
