@@ -86,6 +86,7 @@ function selectors(language) {
 const TIERS = ['2160p', '1080p', '720p'];
 const PT_SLOTS = 2;
 const ORIGINAL_SLOTS = 1;
+const LIGHT_4K_BITRATE = '35Mbps';
 export const SERVICE_IDS = ['realdebrid', 'alldebrid', 'premiumize', 'debridlink', 'offcloud', 'torbox', 'easynews'];
 export const POLICY_LIMITS = { tiers: [...TIERS], maxSlots: 3 };
 
@@ -191,6 +192,17 @@ export function applyNextPolicy(config, { anime, language: languageId = DEFAULT_
   const reachable = `merge(${TIERS.map(t => `resolution(streams, '${t}')`).join(', ')})`;
   next.excludedStreamExpressions.push(expression('abaixo de 720p',
     `count(${reachable}) > 0 ? negate(${reachable}, streams) : []`));
+  // 4K in my language: the first slot stays the best file (the lightest remux, by the sort), the second is the best "light" 4K, no
+  // remux and at most LIGHT_4K_BITRATE (remuxes stutter on weaker links). While a light one exists besides the best, the other
+  // heavy files go, so the tier limit below keeps best + light; with no light one nothing changes. Unknown bitrate counts as 0.
+  if (TIERS.includes('2160p') && PT_SLOTS >= 2) {
+    const tier4k = `resolution(negate(${bad}, ${cachedPt}), '2160p')`;
+    const best = `slice(${tier4k}, 0, 1)`;
+    // Light files of the whole list; intersected with the 4K set below, which keeps the rule under the 3000-character limit.
+    const light = `negate(quality(streams, 'BluRay REMUX'), bitrate(streams, 0, '${LIGHT_4K_BITRATE}'))`;
+    next.excludedStreamExpressions.push(expression(`faixa 2160p ${tag} leve`,
+      `count(negate(merge(${best}, negate(${light}, streams)), ${tier4k})) > 0 ? negate(merge(${best}, ${light}), ${tier4k}) : []`));
+  }
   for (const tier of TIERS) {
     next.excludedStreamExpressions.push(expression(`faixa ${tier} ${tag}`, surplus(cachedPt, tier, PT_SLOTS)));
     next.excludedStreamExpressions.push(expression(`faixa ${tier} original`, surplus(cachedOriginal, tier, ORIGINAL_SLOTS)));

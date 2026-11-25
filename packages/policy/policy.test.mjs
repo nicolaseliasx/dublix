@@ -273,3 +273,19 @@ test('the internal audio marks never show in the list: the formatter drops them 
     assert.equal(switched.formatter.definitions.custom.description, description, 'switching language and back leaves no stale mark');
   }
 });
+
+test('4K PT-BR: a segunda vaga é o melhor 4K leve (sem remux, até 35 Mbps) quando existe; a primeira continua a melhor', () => {
+  const light = (result) => result.excludedStreamExpressions.find(x => x.expression.includes('faixa 2160p PT-BR leve'));
+  const names = (result) => result.excludedStreamExpressions.map(x => x.expression.match(/\/\*([^*]+)\*\//)?.[1]);
+  const result = applyNextPolicy(base(), { anime: false });
+  const rule = light(result);
+  assert.ok(rule, 'regra da opção leve em 4K');
+  assert.match(rule.expression, /quality\([^)]*'BluRay REMUX'\)/);
+  assert.match(rule.expression, /bitrate\([^)]*'35Mbps'\)/);
+  const order = names(result);
+  assert.ok(order.indexOf('Filmhub Next T4: faixa 2160p PT-BR leve') < order.indexOf('Filmhub Next T4: faixa 2160p PT-BR'), 'roda antes do limite da faixa');
+  assert.equal(result.excludedStreamExpressions.filter(x => x.expression.includes(' leve*/')).length, 1, 'só a faixa 4K PT-BR');
+  assert.equal(light(applyNextPolicy(base(), { anime: false, ptSlots: 1 })), undefined, 'com 1 vaga fica só a melhor');
+  assert.equal(light(applyNextPolicy(base(), { anime: false, tiers: ['1080p'] })), undefined, 'sem 4K não há regra');
+  assert.deepEqual(applyNextPolicy(result, { anime: false }), result, 'reaplicar não duplica');
+});

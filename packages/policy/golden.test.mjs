@@ -24,7 +24,15 @@ const OPTION_SETS = {
 // One deliberate change since the freeze: the formatter hides the internal audio marks from the matched-rule line (policy.test.mjs
 // covers it). They are stripped here so every other byte is still compared with the frozen modules.
 const HIDDEN = ['Dual', 'PT-BR', 'original'].map((x) => `'Filmhub Next T4: áudio ${x}',`).join('');
-const text = (value) => JSON.stringify(value, null, 1).split(HIDDEN).join('');
+// Second deliberate change: the 4K tier in the chosen language keeps a light option (policy.test.mjs and the runtime check cover it).
+const withoutLight4k = (value) => {
+  const copy = structuredClone(value);
+  for (const target of [copy, copy.config].filter((x) => Array.isArray(x?.excludedStreamExpressions))) {
+    target.excludedStreamExpressions = target.excludedStreamExpressions.filter((x) => !x.expression?.includes(' leve*/'));
+  }
+  return copy;
+};
+const text = (value) => JSON.stringify(withoutLight4k(value), null, 1).split(HIDDEN).join('');
 
 for (const [name, options] of Object.entries(OPTION_SETS)) {
   test(`golden pt-BR: buildDublixConfig(${name}) is unchanged`, () => {
